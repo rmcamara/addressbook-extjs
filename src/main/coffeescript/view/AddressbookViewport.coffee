@@ -16,9 +16,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define "Addressbook.view.SubmissionViewport",
+Ext.define "Addressbook.view.AddressbookViewport",
   extend: "Ext.container.Viewport"
-#  requires: [ "GeolocationApproval.view.SubmissionRequestForm","GeolocationApproval.config.SubmissionEventMap", "GeolocationApproval.config.CommonEventMap" ]
+  requires: [ "Addressbook.view.LoginForm" ]
   renderTo: Ext.getBody()
   layout:
     type: "fit"
@@ -29,10 +29,10 @@ Ext.define "Addressbook.view.SubmissionViewport",
     Ext.applyIf( me,
       items: [
         xtype: "container"
-        itemId: "submissionRequestForm"
+        itemId: "loginForm"
         layout:
           type: "fit"
-        items: [ xtype: "geolocationApproval-view-submissionRequestForm" ]
+        items: [ xtype: "addressbook-LoginForm" ]
       ]
     )
 

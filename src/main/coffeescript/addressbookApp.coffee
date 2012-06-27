@@ -2,14 +2,9 @@ Ext.Loader.setConfig( enabled: true)
 
 Ext.application
   autoCreateViewport: false
-  name: "addressbook"
+  name: "Addressbook"
+  requires: ['Addressbook.view.AddressbookViewport']
   launch: ->
-    Ext.create('Ext.container.Viewport',{
-      layout: 'fit'
-      items:
-        title: 'Camara Family Address Book'
-        html: 'Hello Ross'
-    }
-    )
+    Ext.create('Addressbook.view.AddressbookViewport')
 
 
