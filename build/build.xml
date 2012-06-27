@@ -1,0 +1,50 @@
+<project name="Addressbook" default="deploy" basedir=".">
+
+	<property name="src" location="../src/main/webapp"/>
+    <property name="dist" location="../../../../xampp/htdocs/addressbook"/>
+
+
+    <target name="deploy" description="Deploy app">
+
+        <copy todir="${dist}/app" failonerror="false">
+            <fileset dir="${src}/app"/>
+        </copy>
+        <copy file="${src}/index.html" todir="${dist}" failonerror="false"/>
+        <echo>Deployed /app and index.html to: ${dist}</echo>
+
+    </target>
+
+
+    <target name="deployall" description="Deploy app, libs, resources, and data" depends="deploy">
+        <copy todir="${dist}/data" failonerror="false">
+            <fileset dir="${src}/data"/>
+        </copy>
+        <copy todir="${dist}/resources" failonerror="false">
+            <fileset dir="${src}/resources"/>
+        </copy>
+        <copy todir="${dist}/libs" failonerror="false">
+            <fileset dir="${src}/libs"/>
+        </copy>
+		<echo>Deployed /app, /data, /resources, /libs, and index.html to: ${dist}</echo>
+
+
+    </target>
+
+
+    <target name="clean" description="Clean target folders">
+        <delete dir="${dist}/app" failonerror="false"/>
+        <delete dir="${dist}/data" failonerror="false"/>
+        <delete dir="${dist}/resources" failonerror="false"/>
+        <delete dir="${dist}/libs" failonerror="false"/>
+        <delete dir="${dist}/config" failonerror="false"/>
+
+        <mkdir dir="${dist}/app" failonerror="false"/>
+        <mkdir dir="${dist}/data" failonerror="false"/>
+        <mkdir dir="${dist}/resources" failonerror="false"/>
+        <mkdir dir="${dist}/libs" failonerror="false"/>
+        <mkdir dir="${dist}/config" failonerror="false"/>
+
+        <echo>Cleaned ${dist}</echo>
+    </target>
+
+</project>
