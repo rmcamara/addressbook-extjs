@@ -1,7 +1,7 @@
 Ext.Loader.setConfig( enabled: true)
 
 Ext.application
-#  autoCreateViewport: false
+  autoCreateViewport: false
   name: "addressbook"
   launch: ->
     Ext.create('Ext.container.Viewport',{
