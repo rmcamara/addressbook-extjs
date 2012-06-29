@@ -25,7 +25,10 @@
         <copy todir="${dist}/libs" failonerror="false">
             <fileset dir="${src}/libs"/>
         </copy>
-		<echo>Deployed /app, /data, /resources, /libs, and index.html to: ${dist}</echo>
+        <copy todir="${dist}/services" failonerror="false">
+            <fileset dir="${src}/services"/>
+        </copy>
+		<echo>Deployed /app, /data, /resources, /libs, /services, and index.html to: ${dist}</echo>
 
 
     </target>
@@ -37,12 +40,14 @@
         <delete dir="${dist}/resources" failonerror="false"/>
         <delete dir="${dist}/libs" failonerror="false"/>
         <delete dir="${dist}/config" failonerror="false"/>
+        <delete dir="${dist}/services" failonerror="false"/>
 
         <mkdir dir="${dist}/app" failonerror="false"/>
         <mkdir dir="${dist}/data" failonerror="false"/>
         <mkdir dir="${dist}/resources" failonerror="false"/>
         <mkdir dir="${dist}/libs" failonerror="false"/>
         <mkdir dir="${dist}/config" failonerror="false"/>
+        <mkdir dir="${dist}/services" failonerror="false"/>
 
         <echo>Cleaned ${dist}</echo>
     </target>

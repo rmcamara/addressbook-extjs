@@ -1,3 +1,7 @@
 
 /.idea
 /src/main/webapp/app
+/.settings
+/build/-p
+/.project
+/.buildpath
