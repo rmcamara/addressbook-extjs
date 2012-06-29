@@ -16,27 +16,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define 'Addressbook.view.AddressbookViewport',
-  extend: 'Ext.container.Viewport'
-  requires: [ 'Addressbook.view.LoginWindow', 'Addressbook.config.AddressbookEventMap', 'Addressbook.util.MessageBus']
-  renderTo: Ext.getBody()
-  layout:
-    type: 'fit'
+Ext.define( 'Addressbook.config.AddressbookEventMap',
 
-  initComponent: ->
-    me = this
-
-    if me
-      win = Ext.create('widget.addressbook-LoginWindow').show()
-
-#    Ext.applyIf( me,
-#      items: [
-#        xtype: 'container'
-#        itemId: 'loginForm'
-#        layout:
-#          type: 'fit'
-#        items: [ xtype: 'addressbook-LoginForm' ]
-#      ]
-#    )
-
-    me.callParent( arguments )
+  statics:
+    LOGIN_SUCCESS: 'Addressbook.event.LoginSuccess'
+)

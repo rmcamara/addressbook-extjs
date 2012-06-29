@@ -8,3 +8,10 @@ Ext.application
     Ext.create('Addressbook.view.AddressbookViewport')
 
 
+Ext.onReady ->
+  Deft.Injector.configure(
+    appConfig:
+      className: "Addressbook.config.AppConfig"
+      parameters: [ environment: "PRODUCTION_ENV" ]
+    messageBus: "Addressbook.util.MessageBus"
+  )

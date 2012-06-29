@@ -16,27 +16,26 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define 'Addressbook.view.AddressbookViewport',
-  extend: 'Ext.container.Viewport'
-  requires: [ 'Addressbook.view.LoginWindow', 'Addressbook.config.AddressbookEventMap', 'Addressbook.util.MessageBus']
-  renderTo: Ext.getBody()
-  layout:
-    type: 'fit'
+###*
+* Base ViewController. Includes template methods for configuring and removing application events.
+###
+Ext.define('Addressbook.controller.BaseViewController',
+  extend: 'Deft.mvc.ViewController'
+  requires: [ 'Addressbook.config.AddressbookEventMap']
+  mixins: [ 'Deft.mixin.Injectable' ]
+  inject: []
 
-  initComponent: ->
-    me = this
+  config:
+    eventMap: null
 
-    if me
-      win = Ext.create('widget.addressbook-LoginWindow').show()
 
-#    Ext.applyIf( me,
-#      items: [
-#        xtype: 'container'
-#        itemId: 'loginForm'
-#        layout:
-#          type: 'fit'
-#        items: [ xtype: 'addressbook-LoginForm' ]
-#      ]
-#    )
+  init: ->
+    @setEventMap(Addressbook.config.AddressbookEventMap)
+    @getView()['parentViewController'] = @
+    @callParent( arguments )
 
-    me.callParent( arguments )
+
+  destroy: ->
+    delete @getView()['parentViewController']
+    @callParent( arguments )
+)

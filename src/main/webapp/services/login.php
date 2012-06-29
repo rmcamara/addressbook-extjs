@@ -21,17 +21,23 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 require_once("dbconnect.php");
-
-if (!$_GET['user'] || !$_GET['password'])
+header("Content-type: application/json", true);
+$json = array();
+if (!$_REQUEST['username'] || !$_REQUEST['password'])
 {
-	throw new Exception('Malformed login request.');
+    $json['success'] = false;
+	echo json_encode($json);
+	die();
 }
 
-$query = "SELECT uid FROM users WHERE username='". $_GET['user']. "' AND password='".$_GET['password']."'";
+$query = "SELECT uid FROM users WHERE username='". $_REQUEST['username']. "' AND password='".$_REQUEST['password']."'";
 $uid = $DB->GetOne($query);
 
 if ($uid == null){
-	header('HTTP/1.1 403 Forbidden');
+    $json['success'] = false;
+    $json['errors'] = array();
+    $json['errors']['password'] = 'Invalid User/Password combination';
+    echo json_encode($json);
 	die();
 }
 
@@ -39,7 +45,7 @@ $ip = getenv('REMOTE_ADDR');
 $query = "UPDATE users SET last_ip='$ip' WHERE uid='$uid'";
 $results = $DB->Execute($query);
 
-header("Content-type: text/json");
-echo json_encode(true);
+$json['success'] = true;
+echo json_encode($json);
 
 ?>
