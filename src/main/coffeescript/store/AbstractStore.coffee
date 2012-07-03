@@ -18,7 +18,8 @@
 #
 Ext.define "Addressbook.store.AbstractStore",
   extend: "Ext.data.JsonStore"
-  requires: [ 'Addressbook.config.AddressbookEventMap' ]
+  requires: [ 'Addressbook.config.AddressbookEventMap',
+              'Ext.data.JsonStore']
 
   config:
     eventMap: null
@@ -39,13 +40,14 @@ Ext.define "Addressbook.store.AbstractStore",
           @onBeforeSync( options, eopts )
 
       proxy:
-        type: "ajax"
+        type: 'ajax'
         headers:
           Accept: "application/json"
           "Content-Type": "application/json"
 
         reader:
-          type: "json"
+          type: 'json'
+          root: 'root'
 
         listeners:
           exception: ( proxy, response, operation, eopts ) =>

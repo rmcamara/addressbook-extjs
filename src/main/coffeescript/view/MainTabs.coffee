@@ -16,31 +16,31 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
+Ext.define 'Addressbook.view.MainTabs',
+  extend: 'Ext.tab.Panel'
+  alias: 'widget.addressbook-MainTabs'
+  requires: [ 'Ext.tab.Panel', 'Addressbook.controller.MainTabsViewController', 'Addressbook.view.PlaceListingPanel']
+  mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
+  controller:'Addressbook.controller.MainTabsViewController'
 
-Ext.define('Addressbook.model.Place',
-  extend: 'Addressbook.model.BaseModel'
-  requires: ['Addressbook.model.BaseModel']
-  fields: [
-    name: 'name'
-    type: 'string'
-  ,
-    name: 'address'
-    type: 'string'
-  ,
-    name: 'address2'
-    type: 'string'
-  ,
-    name: 'city'
-    type: 'string'
-  ,
-    name: 'state'
-    type: 'string'
-  ,
-    name: 'zipcode'
-    type: 'int'
-  ,
-    name: 'phone'
-    type: 'int'
-  ]
-  # Omitted place linkage
-)
+  plain: true
+
+  initComponent: ->
+    me = this
+
+    Ext.applyIf( me,
+      items: [
+        itemId:'placesTab'
+        xtype: 'addressbook-PlaceListingPanel'
+        title:'Places'
+        bodyPadding:10
+      ,
+        title:'People'
+        itemId:'peopleTab'
+        hidden: true
+        bodyPadding:10
+        html:'TODO'
+      ]
+    )
+
+    me.callParent( arguments )

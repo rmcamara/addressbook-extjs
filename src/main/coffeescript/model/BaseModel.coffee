@@ -18,7 +18,7 @@
 #
 
 Ext.define('Addressbook.model.BaseModel',
-  extends: 'Ext.data.Model'
+  extend: 'Ext.data.Model'
   requires: ['Ext.data.Model']
   idProperty: 'id'
   fields: [

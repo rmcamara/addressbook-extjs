@@ -16,31 +16,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
+Ext.define( 'Addressbook.controller.MainTabsViewController',
+  extend: 'Addressbook.controller.BaseViewController'
+  requires: [ 'Addressbook.config.AddressbookEventMap', 'Addressbook.controller.BaseViewController', 'Addressbook.util.MessageBus' ]
+  mixins: [ 'Deft.mixin.Injectable' ]
+  inject: [ 'appConfig' ,'messageBus']
 
-Ext.define('Addressbook.model.Place',
-  extend: 'Addressbook.model.BaseModel'
-  requires: ['Addressbook.model.BaseModel']
-  fields: [
-    name: 'name'
-    type: 'string'
-  ,
-    name: 'address'
-    type: 'string'
-  ,
-    name: 'address2'
-    type: 'string'
-  ,
-    name: 'city'
-    type: 'string'
-  ,
-    name: 'state'
-    type: 'string'
-  ,
-    name: 'zipcode'
-    type: 'int'
-  ,
-    name: 'phone'
-    type: 'int'
-  ]
-  # Omitted place linkage
+  control:
+    placesTab: true
+
+    peopleTab: true
+
+  init: ->
+    @callParent( arguments )
+
+
 )

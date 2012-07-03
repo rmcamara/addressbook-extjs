@@ -16,31 +16,30 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
+Ext.define 'Addressbook.view.AbstractListing',
+  extend: 'Ext.container.Contianer'
+  alias: 'widget.addressbook-AbstractListing'
+  requires: [ 'Ext.container.Container', 'Ext.grid.Panel']
+  mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
+  inject: ['messageBus']
 
-Ext.define('Addressbook.model.Place',
-  extend: 'Addressbook.model.BaseModel'
-  requires: ['Addressbook.model.BaseModel']
-  fields: [
-    name: 'name'
-    type: 'string'
-  ,
-    name: 'address'
-    type: 'string'
-  ,
-    name: 'address2'
-    type: 'string'
-  ,
-    name: 'city'
-    type: 'string'
-  ,
-    name: 'state'
-    type: 'string'
-  ,
-    name: 'zipcode'
-    type: 'int'
-  ,
-    name: 'phone'
-    type: 'int'
-  ]
-  # Omitted place linkage
-)
+  layout: 'vbox'
+
+  initComponent: ->
+    me = this
+
+    Ext.applyIf( me,
+      items: [
+        xtype: 'container'
+        layout: 'hbox'
+        items: [
+          xtype: 'component'
+          html: "HEADER"
+        ]
+      ,
+        xtype: 'grid'
+        title: 'abstract grid'
+      ]
+    )
+
+    me.callParent( arguments )

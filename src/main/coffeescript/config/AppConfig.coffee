@@ -18,6 +18,8 @@ Ext.define( 'Addressbook.config.AppConfig',
       endpoints:
         authentication:
           url: 'data/authentication.json'
+        placesRequest:
+          url: 'data/places.json'
       defaults:
         urlPrefix: 'data/'
         urlSuffix: '.json'
@@ -28,6 +30,8 @@ Ext.define( 'Addressbook.config.AppConfig',
       endpoints:
         authentication:
           url: 'services/login.php'
+        placesRequest:
+          url: 'services/places.php'
       defaults:
         urlPrefix: 'services/'
         urlSuffix: '.json'

@@ -23,19 +23,58 @@ Ext.define('Addressbook.controller.BaseViewController',
   extend: 'Deft.mvc.ViewController'
   requires: [ 'Addressbook.config.AddressbookEventMap']
   mixins: [ 'Deft.mixin.Injectable' ]
-  inject: []
+  inject: ['messageBus']
 
   config:
     eventMap: null
+    messageBus: null
 
 
   init: ->
     @setEventMap(Addressbook.config.AddressbookEventMap)
+    @autoConfigureMessages()
+    @configureMessages()
     @getView()['parentViewController'] = @
     @callParent( arguments )
 
 
   destroy: ->
+    @autoRemoveMessages()
+    @removeMessages()
     delete @getView()['parentViewController']
     @callParent( arguments )
+
+
+  ###*
+  * Child ViewControllers can define a getMessages() method wich returns an object with
+  * an event name as the key and a handler as the value. These events and handlers will
+  * be automatically attached to the message bus during init(), and removed during destroy().
+  ###
+  autoConfigureMessages: ->
+    if( @['getMessages'] )
+      messages = @getMessages()
+
+      for eventName, handler of messages
+        @getMessageBus().on( eventName, handler, @ )
+
+
+  autoRemoveMessages: ->
+    if( @['getMessages'] )
+      messages = @getMessages()
+
+      for eventName, handler of messages
+        @getMessageBus().un( eventName, handler, @ )
+
+
+  ###*
+  * Override in concrete ViewControllers to manually attach listeners to the message bus.
+  ###
+  configureMessages: ->
+
+
+    ###*
+    * Override in concrete ViewControllers to manually remove listeners from the message bus.
+    ###
+  removeMessages: ->
+
 )

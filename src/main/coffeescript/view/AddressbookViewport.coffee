@@ -18,25 +18,31 @@
 #
 Ext.define 'Addressbook.view.AddressbookViewport',
   extend: 'Ext.container.Viewport'
-  requires: [ 'Addressbook.view.LoginWindow', 'Addressbook.config.AddressbookEventMap', 'Addressbook.util.MessageBus']
+  requires: [ 'Addressbook.view.LoginWindow',
+              'Addressbook.config.AddressbookEventMap', 
+              'Addressbook.util.MessageBus',
+              'Addressbook.view.MainTabs']
+  mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
+  inject: [ 'messageBus' ]
   renderTo: Ext.getBody()
+  config:
+    me: null
+    eventMap: null
+
+  padding: 10
   layout:
     type: 'fit'
 
   initComponent: ->
     me = this
-
+    @setEventMap(Addressbook.config.AddressbookEventMap)
     if me
-      win = Ext.create('widget.addressbook-LoginWindow').show()
+      Ext.create('widget.addressbook-LoginWindow').show()
 
-#    Ext.applyIf( me,
-#      items: [
-#        xtype: 'container'
-#        itemId: 'loginForm'
-#        layout:
-#          type: 'fit'
-#        items: [ xtype: 'addressbook-LoginForm' ]
-#      ]
-#    )
+    @messageBus.addListener(@getEventMap().LOGIN_SUCCESS, @renderMainUI, me)
 
     me.callParent( arguments )
+
+  renderMainUI: ->
+    main = Ext.create('widget.addressbook-MainTabs');
+    this.add(main)
