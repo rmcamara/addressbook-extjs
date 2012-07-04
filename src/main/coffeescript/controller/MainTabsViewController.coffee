@@ -24,11 +24,23 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
 
   control:
     placesTab: true
-
     peopleTab: true
 
   init: ->
     @callParent( arguments )
+
+  getMessages: ->
+    result = {}
+    result[ @getEventMap().SWITCH_DISPLAY_MODE ] = @changeDisplayMode
+    return result
+
+  changeDisplayMode: (showPeople) ->
+    if showPeople
+      @getPeopleTab().show()
+      @getPlacesTab().hide()
+    else
+      @getPlacesTab().show()
+      @getPeopleTab().hide()
 
 
 )

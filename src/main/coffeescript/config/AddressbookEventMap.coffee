@@ -20,4 +20,5 @@ Ext.define( 'Addressbook.config.AddressbookEventMap',
 
   statics:
     LOGIN_SUCCESS: 'Addressbook.event.LoginSuccess'
+    SWITCH_DISPLAY_MODE: 'Addressbook.event.SwitchDisplayMode'
 )

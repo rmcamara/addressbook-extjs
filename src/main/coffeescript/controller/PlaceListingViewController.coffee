@@ -17,37 +17,20 @@
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
 Ext.define( 'Addressbook.controller.PlaceListingViewController',
-  extend: 'Addressbook.controller.BaseViewController'
+  extend: 'Addressbook.controller.AbstractListingViewController'
   requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Addressbook.controller.BaseViewController',
+              'Addressbook.controller.AbstractListingViewController',
               'Addressbook.util.MessageBus',
               'Ext.util.Filter']
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus', 'placesStore']
 
-  control:
-    view: true
-    grid: true
-    filterTxt:
-      change: 'updateFilter'
-    refreshBtn:
-      click: 'onRefresh'
-    addPlaceBtn: true
-    addPersonBtn: true
-
   init: ->
+    @setFilterFields(['name', 'address', 'address2', 'details', 'city', 'state', 'zipcode'])
+    @setListingStore(@placesStore)
     @callParent( arguments )
 
-  onRefresh: (button) ->
-    @getView().setLoading( 'Loading places from server' )
-    @placesStore.load(
-      scope: this
-      callback: (records, operation, store) ->
-        @getView().setLoading(false)
-    )
-
-  updateFilter: (control, value) ->
-    @placesStore.filterByKeyword(value, ['name', 'address', 'address2', 'details', 'city', 'state', 'zipcode'])
-    if Ext.isDefined(Ext.global.console)
-      Ext.global.console.log('Applying filter:' + value)
+  switchDisplayMode: (button) ->
+    @getMessageBus().fireEvent(@getEventMap().SWITCH_DISPLAY_MODE, true)
+    @callParent( arguments )
 )
