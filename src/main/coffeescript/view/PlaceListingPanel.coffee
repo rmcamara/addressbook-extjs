@@ -22,9 +22,11 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
   requires: [ 'Ext.panel.Panel',
               'Ext.grid.Panel',
               'Addressbook.model.Place',
-              'Addressbook.store.PlacesStore']
+              'Addressbook.store.PlacesStore',
+              'Addressbook.controller.PlaceListingViewController']
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   inject: ['placesStore']
+  controller: 'Addressbook.controller.PlaceListingViewController'
 
   layout: 'anchor'
   autoScroll: true
@@ -32,13 +34,6 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
   initComponent: ->
     me = this
     Ext.applyIf( me,
-      dockedITems:{
-        itemId: 'toolbar'
-        dock: 'top'
-        height: 34
-        layout:
-          pack: 'start'
-      }
       items: [
         itemId: 'grid'
         anchor: '100%, 100%'
@@ -72,6 +67,44 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
           header: 'Details'
           flex: 3
           dataIndex: 'details'
+        ]
+        dockedItems:[
+          xtype: 'toolbar'
+          items:[
+            'Filter:'
+          ,
+            itemId: 'filterTxt'
+            text: 'filter'
+            xtype: 'textfield'
+            flex: 2
+            maxWidth: 400
+            emptyText: "Enter filter keywords..."
+          ,
+            xtype:'tbspacer'
+            flex: 1
+          ,
+            itemId: 'changeModeBtn'
+            text: 'Mode'
+            tooltip: 'Switch to people view'
+          ,
+            itemId: 'refreshBtn'
+            text: 'Refresh'
+            tooltip: 'Refresh Records'
+          ,
+            xtype:'tbspacer'
+            width: 20
+          ,
+            xtype: 'tbseparator'
+          ,
+            xtype:'tbspacer'
+            width: 20
+          ,
+            itemId: 'addPlaceBtn'
+            text: 'Place'
+          ,
+            itemId: 'addPersonBtn'
+            text: 'Person'
+          ]
         ]
       ]
     )

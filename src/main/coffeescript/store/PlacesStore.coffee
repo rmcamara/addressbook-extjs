@@ -24,7 +24,8 @@ Ext.define "Addressbook.store.PlacesStore",
               'Addressbook.model.Place',
               'Addressbook.util.MessageBus',
               'Addressbook.config.AppConfig']
-  mixins: [ 'Deft.mixin.Injectable' ]
+  mixins: [ 'Deft.mixin.Injectable',
+            'Addressbook.util.Filterable']
   inject: ['messageBus', 'appConfig']
 
   constructor: ( cfg ) ->

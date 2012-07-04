@@ -19,7 +19,7 @@
 Ext.define 'Addressbook.view.AddressbookViewport',
   extend: 'Ext.container.Viewport'
   requires: [ 'Addressbook.view.LoginWindow',
-              'Addressbook.config.AddressbookEventMap', 
+              'Addressbook.config.AddressbookEventMap',
               'Addressbook.util.MessageBus',
               'Addressbook.view.MainTabs']
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
