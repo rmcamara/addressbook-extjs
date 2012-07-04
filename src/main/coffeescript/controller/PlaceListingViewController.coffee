@@ -33,4 +33,8 @@ Ext.define( 'Addressbook.controller.PlaceListingViewController',
   switchDisplayMode: (button) ->
     @getMessageBus().fireEvent(@getEventMap().SWITCH_DISPLAY_MODE, true)
     @callParent( arguments )
+
+  openEditor: (view, record) ->
+    @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, record)
+    @callParent( arguments )
 )

@@ -18,11 +18,15 @@
 #
 Ext.define( 'Addressbook.controller.MainTabsViewController',
   extend: 'Addressbook.controller.BaseViewController'
-  requires: [ 'Addressbook.config.AddressbookEventMap', 'Addressbook.controller.BaseViewController', 'Addressbook.util.MessageBus' ]
+  requires: [ 'Addressbook.config.AddressbookEventMap',
+              'Addressbook.controller.BaseViewController',
+              'Addressbook.util.MessageBus',
+              'Addressbook.view.PlaceEditor']
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus']
 
   control:
+    view: true
     placesTab: true
     peopleTab: true
 
@@ -32,6 +36,7 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
   getMessages: ->
     result = {}
     result[ @getEventMap().SWITCH_DISPLAY_MODE ] = @changeDisplayMode
+    result[ @getEventMap().OPEN_EDITOR_PLACE ] = @openPlaceEditor
     return result
 
   changeDisplayMode: (showPeople) ->
@@ -42,5 +47,19 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
       @getPlacesTab().show()
       @getPeopleTab().hide()
 
+  openPlaceEditor: (model) ->
+    if !model
+      model = new Addressbook.model.Place()
 
+    tab = @getView().getComponent(model.getId())
+    if tab
+      @getView().setActiveTab(tab)
+    else
+      @getView().add(
+        itemId: model.getId()
+        xtype: 'addressbook-PlaceEditor'
+        closable: true
+        iconCls: 'place'
+        model: model
+      ).show()
 )

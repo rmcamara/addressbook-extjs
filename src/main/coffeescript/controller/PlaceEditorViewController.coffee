@@ -16,49 +16,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define( 'Addressbook.controller.AbstractListingViewController',
+Ext.define( 'Addressbook.controller.PlaceEditorViewController',
   extend: 'Addressbook.controller.BaseViewController'
   requires: [ 'Addressbook.config.AddressbookEventMap',
               'Addressbook.controller.BaseViewController',
-              'Addressbook.util.MessageBus']
+              'Addressbook.util.MessageBus' ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus']
 
-  control:
-    view: true
-    grid:
-      itemdblclick: 'openEditor'
-    filterTxt:
-      change: 'updateFilter'
-    refreshBtn:
-      click: 'onRefresh'
-    addPlaceBtn: true
-    addPersonBtn: true
-    changeModeBtn:
-      click: 'switchDisplayMode'
+  control: true
+
 
   config:
-    listingStore: true
-    filterFields: true
+    view: null
+    messageBus: null
 
   init: ->
     @callParent( arguments )
-
-  onRefresh: (button) ->
-    @getView().setLoading( 'Loading data from server' )
-    @listingStore.load(
-      scope: this
-      callback: (records, operation, store) ->
-        @getView().setLoading(false)
-    )
-
-  updateFilter: (control, value) ->
-    @listingStore.filterByKeyword(value, @getFilterFields())
-    if Ext.isDefined(Ext.global.console)
-      Ext.global.console.log('Applying filter:' + value)
-
-  switchDisplayMode: (button) ->
-
-  openEditor: (view, record) ->
-
 )

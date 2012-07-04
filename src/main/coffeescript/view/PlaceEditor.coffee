@@ -1,4 +1,4 @@
-#    
+###
 #    Copyright 2012 Ross Camara
 #
 #    This file is part of Addressbook.
@@ -15,12 +15,30 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
-#
-Ext.define( 'Addressbook.config.AddressbookEventMap',
+###
+Ext.define 'Addressbook.view.PlaceEditor',
+  extend: 'Ext.panel.Panel'
+  alias: 'widget.addressbook-PlaceEditor'
+  requires: [ 'Ext.panel.Panel',
+              'Addressbook.model.Place',
+              'Addressbook.store.PlacesStore',
+              'Addressbook.controller.PlaceEditorViewController']
+  mixins: [ 'Deft.mixin.Controllable',
+            'Deft.mixin.Injectable' ]
+  inject: ['placesStore']
+  controller: 'Addressbook.controller.PlaceEditorViewController'
 
-  statics:
-    LOGIN_SUCCESS: 'Addressbook.event.LoginSuccess'
-    SWITCH_DISPLAY_MODE: 'Addressbook.event.SwitchDisplayMode'
-    OPEN_EDITOR_PLACE: 'Addressbook.event.OpenEditorPlace'
-    OPEN_EDITOR_PERSON: 'Addressbook.event.OpenEditorPerson'
-)
+  layout: 'anchor'
+  config:
+    model: true
+
+  initComponent: ->
+    me = this
+    @setTitle(@getModel().get('name'))
+    Ext.applyIf( me,
+      items: [
+
+      ]
+    )
+
+    me.callParent( arguments )

@@ -19,7 +19,10 @@
 Ext.define 'Addressbook.view.MainTabs',
   extend: 'Ext.tab.Panel'
   alias: 'widget.addressbook-MainTabs'
-  requires: [ 'Ext.tab.Panel', 'Addressbook.controller.MainTabsViewController', 'Addressbook.view.PlaceListingPanel']
+  requires: [ 'Ext.tab.Panel',
+              'Addressbook.controller.MainTabsViewController',
+              'Addressbook.view.PlaceListingPanel',
+              'Addressbook.view.PlaceEditor']
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   controller:'Addressbook.controller.MainTabsViewController'
 
