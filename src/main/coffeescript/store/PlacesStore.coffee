@@ -36,11 +36,21 @@ Ext.define "Addressbook.store.PlacesStore",
     me.callParent( [ Ext.apply(
       model: 'Addressbook.model.Place'
       autoLoad: true
+      autoSync: true
       proxy:
-        url: @appConfig.getEndpoint('placesRequest').url
+        api:
+          read: @appConfig.getEndpoint('placesRequestRead').url
+          create: @appConfig.getEndpoint('placesRequestCreate').url
+          update: @appConfig.getEndpoint('placesRequestUpdate').url
+          destroy: @appConfig.getEndpoint('placesRequestDestroy').url
+        writer:
+          root: 'data'
+        reader:
+          root: 'data'
         startParam: undefined
         limitParam: undefined
         pageParam: undefined
+
       listeners:
         load: (store, records, successful, eOpts) ->
           @onLoad(store, records, successful, eOpts)
@@ -51,3 +61,5 @@ Ext.define "Addressbook.store.PlacesStore",
   onLoad: (store, records, successful, eOpts) ->
     if Ext.isDefined(Ext.global.console)
       Ext.global.console.log('Records loaded: ' + records.length)
+
+

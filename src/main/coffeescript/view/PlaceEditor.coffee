@@ -115,7 +115,7 @@ Ext.define 'Addressbook.view.PlaceEditor',
           ,
           '->'
           ,
-            itemId: 'saveBtn'
+            itemId: 'saveButton'
             text: 'Save'
             formBind: true
             disabled: true

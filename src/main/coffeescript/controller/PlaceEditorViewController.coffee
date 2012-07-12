@@ -27,6 +27,8 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
   control:
     placeForm: true
     currentDetailsPanel: true
+    saveButton:
+      click: 'onSave'
 
   config:
     view: null
@@ -35,9 +37,16 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
   init: ->
     model = @getView().getModel()
     if model
-      @getPlaceForm().loadRecord(model)
-      Ext.global.console.log(model.toHtmlString())
+      @getForm().loadRecord(model)
+      # Ext.global.console.log(model.toHtmlString())
       @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
 
     @callParent( arguments )
+
+  onSave: () ->
+    if (@getForm().isValid())
+      @getForm().updateRecord(@getView().getModel())
+
+  getForm: () ->
+    @getPlaceForm().getForm()
 )

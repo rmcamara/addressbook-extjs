@@ -20,9 +20,12 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-require_once("dbconnect.php");
+require_once(dirname(__FILE__)."/dbconnect.php");
 
-include("dbscheme.php");
+require(dirname(__FILE__).'/request.php');
+require(dirname(__FILE__).'/response.php');
+
+include(dirname(__FILE__)."/dbscheme.php");
 
 //
 
@@ -79,7 +82,7 @@ function ListAllAddress() {
 		$jObj[] = $place;
 	}
 	header("Content-type: application/json", true);
-	$jObj = array('root' => $jObj, 'success' => 'true');
+	$jObj = array('data' => $jObj, 'success' => 'true');
 	echo json_encode($jObj);
 }
 
@@ -407,32 +410,27 @@ function GetLocation() {
 function CommitLocation(){
 	global $DB;
 
-	if($_REQUEST[Place::ID] > 0){
-		$record[Place::ID] = $_REQUEST[Place::ID];
-	}
-	$record[Place::NAME] = $_REQUEST[Place::NAME];
-	$record[Place::ADDRESS] = $_REQUEST[Place::ADDRESS];
-	$record[Place::ADDRESS2] = $_REQUEST[Place::ADDRESS2];
-	$record[Place::CITY] = $_REQUEST[Place::CITY];
-	$record[Place::STATE] = $_REQUEST[Place::STATE];
-	$record[Place::ZIPCODE] = $_REQUEST[Place::ZIPCODE];
-	$record[Place::PHONE] = $_REQUEST[Place::PHONE];
-	$record[Place::DETAILS] = $_REQUEST[Place::DETAILS];
+	$request = new Request(array('restful' => false));
+    $jRequest = get_object_vars($request->params);
 
-	if($_REQUEST[Place::ID] < 1){
-		$DB->AutoExecute(Place::TABLE_NAME,$record, 'INSERT');
+	$res = new Response();
+
+	if($jRequest[Place::ID] < 1){
+		$DB->AutoExecute(Place::TABLE_NAME,$jRequest, 'INSERT');
 
 		// update the id.
-		$sql = "select " . Place::ID . " from " . Place::TABLE_NAME . generateWhere($record) .
+		$sql = "select " . Place::ID . " from " . Place::TABLE_NAME . generateWhere($jRequest) .
 		" Order by `" . Place::LAST_UPDATE . "` DESC";
-		$_REQUEST[Place::ID] = $DB->GetOne($sql);
+		$jRequest[Place::ID] = $DB->GetOne($sql);
 	}
 	else{
-		$DB->AutoExecute(Place::TABLE_NAME,$record, 'UPDATE', Place::ID."=".$_REQUEST[Place::ID], false);
+		$DB->AutoExecute(Place::TABLE_NAME,$jRequest, 'UPDATE', Place::ID."=".$jRequest[Place::ID], false);
 	}
 
-	// return the updated person
-	GetLocation();
+    $res->success = true;
+    $res->message = "Updated Record";
+    // TODO include the updated record
+	echo $res->to_json();
 }
 
 function DeleteModel($mode){
