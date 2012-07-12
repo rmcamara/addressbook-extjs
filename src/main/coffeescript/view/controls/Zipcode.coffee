@@ -16,28 +16,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define( 'Addressbook.controller.PlaceEditorViewController',
-  extend: 'Addressbook.controller.BaseViewController'
-  requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Addressbook.controller.BaseViewController',
-              'Addressbook.util.MessageBus' ]
-  mixins: [ 'Deft.mixin.Injectable' ]
-  inject: [ 'appConfig' ,'messageBus']
+Ext.define 'Addressbook.view.controls.Zipcode',
+  extend: 'Ext.form.field.Text'
+  alias: 'widget.zipcode'
+  requires: [ 'Ext.form.field.Text',
+              'Addressbook.util.ZipcodeValidator']
 
-  control:
-    placeForm: true
-    currentDetailsPanel: true
+  initComponent: ->
+    me = this
 
-  config:
-    view: null
-    messageBus: null
+    Ext.merge( me,
+      fieldLabel: 'Zip Code'
+      vtype: 'zipcode'
+    )
 
-  init: ->
-    model = @getView().getModel()
-    if model
-      @getPlaceForm().loadRecord(model)
-      Ext.global.console.log(model.toHtmlString())
-      @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
+    me.callParent( arguments )
 
-    @callParent( arguments )
-)
+  valueToRaw: (value) ->
+    if !value
+      return @callParent( value )
+    else
+      return Ext.util.Format.leftPad(value, 5, '0')

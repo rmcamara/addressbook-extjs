@@ -40,7 +40,15 @@ Ext.define('Addressbook.model.Place',
     type: 'int'
   ,
     name: 'phone'
-    type: 'int'
+    type: 'string'
   ]
-  # Omitted place linkage
+
+  toHtmlString: () ->
+    currentDetails = @get('name') + '\n'
+    currentDetails += @get('address') + '\n'
+    if @get('address2')
+      currentDetails += @get('address2') + '\n'
+    currentDetails += @get('city') + ', '
+    currentDetails += @get('state') + ' '
+    currentDetails += Ext.util.Format.leftPad(@get('zipcode'), 5, '0') + '\n'
 )

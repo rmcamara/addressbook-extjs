@@ -22,13 +22,20 @@ Ext.define 'Addressbook.view.PlaceEditor',
   requires: [ 'Ext.panel.Panel',
               'Addressbook.model.Place',
               'Addressbook.store.PlacesStore',
-              'Addressbook.controller.PlaceEditorViewController']
+              'Addressbook.controller.PlaceEditorViewController',
+              'Addressbook.data.states',
+              'Addressbook.view.controls.Zipcode'
+              'Addressbook.view.controls.Telephone'
+  ]
   mixins: [ 'Deft.mixin.Controllable',
             'Deft.mixin.Injectable' ]
   inject: ['placesStore']
   controller: 'Addressbook.controller.PlaceEditorViewController'
 
-  layout: 'anchor'
+  layout:
+    type: 'hbox'
+    align: 'stretch'
+
   config:
     model: true
 
@@ -36,8 +43,105 @@ Ext.define 'Addressbook.view.PlaceEditor',
     me = this
     @setTitle(@getModel().get('name'))
     Ext.applyIf( me,
+      bodyPadding: 5
       items: [
+        itemId: 'placeForm'
+        xtype: 'form'
+        flex: 1
+        defaultType: 'textfield'
+        frame: true
+        title: 'Places Editor'
+        fieldDefaults:
+          labelAlign: 'right'
+          labelWidth: 100
+          msgTarget: 'side'
+          width: 450
 
+        items: [
+          fieldLabel: 'Location Name'
+          name: 'name'
+          allowBlank: false
+        ,
+          fieldLabel: 'Address'
+          name: 'address'
+          allowBlank: false
+        ,
+          fieldLabel: 'Address2'
+          name: 'address2'
+        ,
+          fieldLabel: 'City'
+          name: 'city'
+        ,
+          xtype: 'combobox'
+          fieldLabel: 'State'
+          name: 'state'
+          store: Ext.create('Ext.data.ArrayStore',
+            fields: ['abbr', 'state'],
+            data : Addressbook.data.states
+          )
+          valueField: 'abbr'
+          displayField: 'state'
+          queryMode: 'local'
+          typeAhead: true
+          emptyText: 'Select a state...'
+          allowBlank: false
+          forceSelection: true
+        ,
+          xtype: 'zipcode'
+          name: 'zipcode'
+        ,
+          xtype: 'telephone'
+          fieldLabel: 'Phone'
+          name: 'phone'
+        ,
+          xtype: 'textareafield'
+          fieldLabel: 'Details'
+          name: 'details'
+          height: 200
+        ]
+        dockedItems:[
+          xtype: 'toolbar'
+          dock: 'bottom'
+          layout:
+            type: 'hbox'
+            align: 'stretch'
+            pack: 'end'
+          items: [
+            itemId: 'linkBtn'
+            text: 'Link to...'
+          ,
+            itemId: 'deleteBtn'
+            text: 'Delete'
+          ,
+          '->'
+          ,
+            itemId: 'saveBtn'
+            text: 'Save'
+            formBind: true
+            disabled: true
+          ]
+        ]
+      ,
+        xtype: 'container'
+        frame: false
+        flex: 1
+        padding: "0 0 0 10"
+        layout:
+          type: 'vbox'
+          align: 'stretch'
+        items:[
+          xtype: 'panel'
+          itemId: 'currentDetailsPanel'
+          title: 'Current Details'
+          padding: '0 0 5 0'
+          flex: 2
+          bodyPadding: '20'
+        ,
+          xtype: 'panel'
+          title: 'Associated Items'
+          padding: "5 0 0 0"
+          flex: 3
+        ]
       ]
     )
 
