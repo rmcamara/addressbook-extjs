@@ -34,6 +34,8 @@ $msg = print_r($_REQUEST, true);
 $query = "INSERT INTO requestLog (source, request) VALUES ('$ip', '$msg')";
 $DB->Execute($query);
 
+$request = new Request(array('restful' => false));
+
 // perform login check
 
 function GetValueString($key, $value, $results){
@@ -364,23 +366,19 @@ function CommitPerson(){
 
 function GetLocation() {
 	global $DB;
+	global $request;
+    $res = new Response();
 
-	$fields = array( Place::ID => $_REQUEST[Place::ID]);
+	$fields = array( Place::ID => $request->params->id);
 	$query = "SELECT * FROM ".Place::TABLE_NAME. generateWhere($fields);
 	$results = $DB->Execute($query);
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
-	$xml->startElement('data');
-
 	while ($place = $results->FetchRow()) {
-		$xml->startElement('Place');
-		foreach ($place as $key => $value){
-			$xml->writeAttribute($key, GetValueString($key, $value, $results));
-		}
+		$placeArr = array();
+
+        foreach ($place as $key => $value){
+        	$placeArr[$key]=GetValueString($key, $value, $results);
+        }
 
 		$pquery = "Select * ".
 				"FROM ".Person::TABLE_NAME.
@@ -388,49 +386,50 @@ function GetLocation() {
 				"WHERE links.places=" . $place[Place::ID];
 		$people = $DB->Execute($pquery);
 
-		$xml->startElement('People');
-		while ($person = $people->FetchRow()) {
-			$xml->startElement('Person');
-			foreach ($person as $key => $value){
-				$xml->writeAttribute($key, GetValueString($key, $value, $results));
-			}
-			$xml->endElement(); // end person
-		}
-		$xml->endElement();
-		$xml->endElement();
+		$pquery = "Select id, firstname, lastname, title ".
+                    "FROM people LEFT JOIN links ON people.id=links.people ".
+        			"WHERE links.places=" . $placeArr['id'];
+        $people = $DB->Execute($pquery);
+
+        $placeArr['People'] = array();
+        while ($person = $people->FetchRow()) {
+        	$jPerson = array();
+        	foreach ($person as $key => $value){
+        		$jPerson[$key] = GetValueString($key, $value, $results);
+        	}
+        	$placeArr['People'][] = $jPerson;
+        }
+
+        $res->data = $placeArr;
 	}
 
-	$xml->endElement(); // end data
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+    $res->success = true;
+    $res->message = "Loaded Record";
+	return $res;
 }
 
 function CommitLocation(){
 	global $DB;
+	global $request;
+    $res = new Response();
 
-	$request = new Request(array('restful' => false));
     $jRequest = get_object_vars($request->params);
-
-	$res = new Response();
-
-	if($jRequest[Place::ID] < 1){
+	if($request->params->id < 1){
 		$DB->AutoExecute(Place::TABLE_NAME,$jRequest, 'INSERT');
 
 		// update the id.
 		$sql = "select " . Place::ID . " from " . Place::TABLE_NAME . generateWhere($jRequest) .
 		" Order by `" . Place::LAST_UPDATE . "` DESC";
-		$jRequest[Place::ID] = $DB->GetOne($sql);
+		$request->params->id = $DB->GetOne($sql);
 	}
 	else{
-		$DB->AutoExecute(Place::TABLE_NAME,$jRequest, 'UPDATE', Place::ID."=".$jRequest[Place::ID], false);
+		$DB->AutoExecute(Place::TABLE_NAME,$jRequest, 'UPDATE', Place::ID."=".$request->params->id, false);
 	}
 
     $res->success = true;
     $res->message = "Updated Record";
-    // TODO include the updated record
-	echo $res->to_json();
+    $res->data = GetLocation()->data;
+	return $res;
 }
 
 function DeleteModel($mode){

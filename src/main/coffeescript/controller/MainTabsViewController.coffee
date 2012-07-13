@@ -61,5 +61,6 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
         closable: true
         iconCls: 'place'
         model: model
+        isNew: !model.getId()
       ).show()
 )

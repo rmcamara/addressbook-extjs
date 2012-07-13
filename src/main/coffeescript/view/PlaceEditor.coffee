@@ -38,10 +38,11 @@ Ext.define 'Addressbook.view.PlaceEditor',
 
   config:
     model: true
+    isNew: false
 
   initComponent: ->
     me = this
-    @setTitle(@getModel().get('name'))
+    @setTitle(if @getModel().get('name') then @getModel().get('name') else 'New Place')
     Ext.applyIf( me,
       bodyPadding: 5
       items: [
@@ -115,7 +116,7 @@ Ext.define 'Addressbook.view.PlaceEditor',
           ,
           '->'
           ,
-            itemId: 'saveButton'
+            itemId: 'saveBtn'
             text: 'Save'
             formBind: true
             disabled: true

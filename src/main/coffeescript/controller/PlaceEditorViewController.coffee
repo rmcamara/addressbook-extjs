@@ -22,21 +22,23 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
               'Addressbook.controller.BaseViewController',
               'Addressbook.util.MessageBus' ]
   mixins: [ 'Deft.mixin.Injectable' ]
-  inject: [ 'appConfig' ,'messageBus']
+  inject: [ 'appConfig' ,'messageBus', 'placesStore']
 
   control:
     placeForm: true
     currentDetailsPanel: true
-    saveButton:
+    saveBtn:
       click: 'onSave'
 
   config:
     view: null
     messageBus: null
+    isNew: false
 
   init: ->
     model = @getView().getModel()
-    if model
+    @setIsNew(@getView().getIsNew())
+    if !@getView().getIsNew()
       @getForm().loadRecord(model)
       # Ext.global.console.log(model.toHtmlString())
       @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
@@ -44,8 +46,26 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     @callParent( arguments )
 
   onSave: () ->
-    if (@getForm().isValid())
-      @getForm().updateRecord(@getView().getModel())
+    model = @getView().getModel()
+    if !@getForm().isValid()
+      return
+
+    @getForm().updateRecord(model)
+    if @getIsNew()
+      @placesStore.add(model)
+      @placesStore.sync(
+        success: =>
+          @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, @getView().getModel())
+          @getView().destroy()
+      )
+
+    else
+      @placesStore.sync(
+        success: =>
+          @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
+          @getView().setTitle(model.get('name'))
+      );
+
 
   getForm: () ->
     @getPlaceForm().getForm()

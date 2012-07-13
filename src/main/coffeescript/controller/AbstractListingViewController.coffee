@@ -32,7 +32,8 @@ Ext.define( 'Addressbook.controller.AbstractListingViewController',
       change: 'updateFilter'
     refreshBtn:
       click: 'onRefresh'
-    addPlaceBtn: true
+    addPlaceBtn:
+      click: 'onAddPlace'
     addPersonBtn: true
     changeModeBtn:
       click: 'switchDisplayMode'
@@ -61,4 +62,15 @@ Ext.define( 'Addressbook.controller.AbstractListingViewController',
 
   openEditor: (view, record) ->
 
+  onAddPlace: ->
+    @openPlaceEditor(null)
+
+  onAddPerson: ->
+    @openPersonEditor(null)
+
+  openPlaceEditor: (record) ->
+    @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, record)
+
+  openPersonEditor: (record) ->
+    @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PERSON, record)
 )

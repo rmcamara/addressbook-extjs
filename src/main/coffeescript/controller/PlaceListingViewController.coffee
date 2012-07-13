@@ -35,6 +35,6 @@ Ext.define( 'Addressbook.controller.PlaceListingViewController',
     @callParent( arguments )
 
   openEditor: (view, record) ->
-    @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, record)
+    @openPlaceEditor(record)
     @callParent( arguments )
 )

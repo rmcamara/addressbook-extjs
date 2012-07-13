@@ -39,7 +39,7 @@ Ext.define( 'Addressbook.config.AppConfig',
         placesRequestRead:
           url: 'services/places/read.php'
         placesRequestCreate:
-          url: 'services/places/create.php'
+          url: 'services/places/update.php'
         placesRequestUpdate:
           url: 'services/places/update.php'
         placesRequestDestroy:

@@ -36,7 +36,7 @@ Ext.define "Addressbook.store.PlacesStore",
     me.callParent( [ Ext.apply(
       model: 'Addressbook.model.Place'
       autoLoad: true
-      autoSync: true
+      autoSync: false
       proxy:
         api:
           read: @appConfig.getEndpoint('placesRequestRead').url
