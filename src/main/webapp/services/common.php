@@ -386,36 +386,24 @@ function CommitLocation(){
 
 function DeleteModel($mode){
 	global $DB;
-
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
+    global $request;
+    $res = new Response();
 
 	$query = "DELETE FROM links WHERE ";
 	$query .= $mode ? "places" : "people";
 	$query .= "=";
-	$query .= $mode ? $_REQUEST[Place::ID] : $_REQUEST[Person::ID];
-	$DB->Execute($query);
-	$xml->startElement('links');
-	$xml->text($query);
-	$xml->endElement();
+	$query .= $request->params->id;
 
 	$query = "DELETE FROM ";
 	$query .= $mode ? Place::TABLE_NAME : Person::TABLE_NAME;
 	$query .= " WHERE ";
 	$query .= $mode ? Place::ID : Person::ID;
 	$query .= "=";
-	$query .= $mode ? $_REQUEST[Place::ID] : $_REQUEST[Person::ID];
+	$query .= $request->params->id;
 	$DB->Execute($query);
-	$xml->startElement('item');
-	$xml->text($query);
-	$xml->endElement();
 
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	$res->success = true;
+	$res->message = "Record Deleted";
+	return $res;
 }
 ?>

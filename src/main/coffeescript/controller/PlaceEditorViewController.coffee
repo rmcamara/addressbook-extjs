@@ -29,6 +29,8 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     currentDetailsPanel: true
     saveBtn:
       click: 'onSave'
+    deleteBtn:
+      click: 'onDelete'
 
   config:
     view: null
@@ -51,21 +53,49 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
       return
 
     @getForm().updateRecord(model)
+    @getView().setLoading("Saving...")
     if @getIsNew()
       @placesStore.add(model)
       @placesStore.sync(
-        success: =>
-          @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, @getView().getModel())
+        callback: =>
+          @getView().setLoading(false)
+        success: (batch)=>
+          newModel = batch.operations[0].records[0]
+          @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, newModel)
           @getView().destroy()
       )
 
     else
       @placesStore.sync(
+        callback: =>
+          @getView().setLoading(false)
         success: =>
           @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
           @getView().setTitle(model.get('name'))
       );
 
+  onDelete: () ->
+    Ext.Msg.show(
+      title: 'Confirm Delete'
+      msg: 'Are you sure you wish to delete this record?'
+      buttons: Ext.Msg.YES | Ext.Msg.CANCEL
+      fn: @confirmDelete
+      scope: @
+    )
+
+  confirmDelete: (buttonId) ->
+    if (buttonId == 'yes')
+      if @getIsNew()
+        @getView().destroy()
+      else
+        @getView().setLoading("Deleting...")
+        @placesStore.remove(@getView().getModel())
+        @placesStore.sync(
+          callback: =>
+            @getView().setLoading(false)
+          success: =>
+            @getView().destroy()
+        )
 
   getForm: () ->
     @getPlaceForm().getForm()
