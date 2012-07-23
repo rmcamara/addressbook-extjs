@@ -48,13 +48,13 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     @callParent( arguments )
 
   onSave: () ->
-    model = @getView().getModel()
     if !@getForm().isValid()
       return
 
-    @getForm().updateRecord(model)
     @getView().setLoading("Saving...")
     if @getIsNew()
+      model = @getView().getModel()
+      @getForm().updateRecord(model)
       @placesStore.add(model)
       @placesStore.sync(
         callback: =>
@@ -66,6 +66,8 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
       )
 
     else
+      model = @placesStore.getById(@getView().getModel().getId())
+      @getForm().updateRecord(model)
       @placesStore.sync(
         callback: =>
           @getView().setLoading(false)
