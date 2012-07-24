@@ -16,10 +16,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define "Addressbook.store.AbstractStore",
-  extend: "Ext.data.Store"
-  requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Ext.data.Store']
+Ext.define 'Addressbook.proxy.AbstractProxy',
+  extend: 'Ext.data.proxy.Ajax'
+  requires: [
+    'Addressbook.config.AddressbookEventMap'
+    'Ext.data.proxy.Ajax'
+  ]
 
   config:
     eventMap: null
@@ -31,24 +33,31 @@ Ext.define "Addressbook.store.AbstractStore",
     cfg = cfg or {}
 
     me.callParent( [ Ext.merge(
+      headers:
+        Accept: 'application/json'
+        'Content-Type': 'application/json'
+      startParam: undefined
+      limitParam: undefined
+      pageParam: undefined
+      writer:
+        type: 'json'
+        root: 'data'
+      reader:
+        type: 'json'
+        root: 'data'
 
       listeners:
-        beforeload: ( store, operation, options ) =>
-          @onBeforeLoad( store, operation, options )
+        exception: ( proxy, response, operation, eopts ) =>
+          try
+            errorData = Ext.decode( response.responseText )
+          catch error
+            errorData = null
 
-        beforesync: ( options, eopts ) =>
-          @onBeforeSync( options, eopts )
+          operation.setException( errorData )
+          @onProxyException( proxy, response, operation, eopts )
       ,
       cfg ) ]
     )
 
-
-  onBeforeLoad: ( store, operation, options ) ->
-#    store.getProxy().headers.WidgetTokenId = @csrfSetupProxy.getAuthToken()
-    true
-
-
-  onBeforeSync: ( options, eopts ) ->
-#    @getProxy().headers.WidgetTokenId = @csrfSetupProxy.getAuthToken()
-    true
-
+  onProxyException: ( proxy, response, operation, eopts ) ->
+    Ext.log( {msg: 'Proxy exception:', dump: response, level: 'log'} )

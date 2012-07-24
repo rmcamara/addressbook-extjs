@@ -3,9 +3,10 @@ Ext.Loader.setConfig( enabled: true, disableCaching: false)
 Ext.application
   autoCreateViewport: false
   name: "Addressbook"
-  requires: ['Addressbook.view.AddressbookViewport']
+  requires: [
+    'Addressbook.view.AddressbookViewport'
+  ]
   launch: ->
-    Ext.create('Addressbook.model.Place')
     Ext.create('Addressbook.view.AddressbookViewport')
 
 
@@ -15,5 +16,6 @@ Ext.onReady ->
       className: "Addressbook.config.AppConfig"
       parameters: [ environment: "PRODUCTION_ENV" ]
     messageBus: "Addressbook.util.MessageBus"
+    personStore: 'Addressbook.store.PersonStore'
     placesStore: 'Addressbook.store.PlacesStore'
   )

@@ -18,8 +18,12 @@
 #
 
 Ext.define('Addressbook.model.Person',
-  extends: 'Addressbook.model.BaseModel'
-  requires: ['Addressbook.model.BaseModel']
+  extend: 'Addressbook.model.BaseModel'
+  requires: [
+    'Addressbook.model.BaseModel'
+    'Addressbook.proxy.PersonProxy'
+  ]
+
   fields: [
     name: 'firstname'
     type: 'string'
@@ -41,5 +45,15 @@ Ext.define('Addressbook.model.Person',
     name: 'cell'
     type: 'int'
   ]
+
+  hasMany: [
+    name: 'places'
+    model: 'Addressbook.model.Place'
+    foreignKey: 'parent_id',
+    associationKey: 'places'
+  ]
+
+  proxy:
+    type: 'personProxy'
   # Omitted person linkage
 )

@@ -19,7 +19,16 @@
 
 Ext.define('Addressbook.model.Place',
   extend: 'Addressbook.model.BaseModel'
-  requires: ['Addressbook.model.BaseModel']
+  requires: [
+    'Addressbook.model.BaseModel'
+    'Addressbook.proxy.PlacesProxy'
+  ]
+  mixins: [ 'Deft.mixin.Injectable']
+  inject: [
+    'messageBus'
+    'appConfig'
+  ]
+
   fields: [
     name: 'name'
     type: 'string'
@@ -42,6 +51,16 @@ Ext.define('Addressbook.model.Place',
     name: 'phone'
     type: 'string'
   ]
+
+  hasMany: [
+    name: 'people'
+    model: 'Addressbook.model.Person'
+    foreignKey: 'parent_id',
+    associationKey: 'people'
+  ]
+
+  proxy:
+    type: 'placesProxy'
 
   toHtmlString: () ->
     currentDetails = @get('name') + '\n'

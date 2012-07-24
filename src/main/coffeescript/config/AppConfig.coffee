@@ -26,6 +26,14 @@ Ext.define( 'Addressbook.config.AppConfig',
           url: 'data/places/update.json'
         placesRequestDestroy:
           url: 'data/places/destroy.json'
+        personRequestRead:
+          url: 'services/person/read.json'
+        personRequestCreate:
+          url: 'services/person/update.json'
+        personRequestUpdate:
+          url: 'services/person/update.json'
+        personRequestDestroy:
+          url: 'services/person/destroy.json'
       defaults:
         urlPrefix: 'data/'
         urlSuffix: '.json'
@@ -44,6 +52,14 @@ Ext.define( 'Addressbook.config.AppConfig',
           url: 'services/places/update.php'
         placesRequestDestroy:
           url: 'services/places/destroy.php'
+        personRequestRead:
+          url: 'services/person/read.php'
+        personRequestCreate:
+          url: 'services/person/update.php'
+        personRequestUpdate:
+          url: 'services/person/update.php'
+        personRequestDestroy:
+          url: 'services/person/destroy.php'
       defaults:
         urlPrefix: 'services/'
         urlSuffix: '.json'

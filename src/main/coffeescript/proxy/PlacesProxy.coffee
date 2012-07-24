@@ -16,20 +16,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.require('Addressbook.model.Place')
-
-Ext.define "Addressbook.store.PlacesStore",
-  extend: 'Addressbook.store.AbstractStore'
+Ext.define "Addressbook.proxy.PlacesProxy",
+  extend: 'Addressbook.proxy.AbstractProxy'
   requires: [
     'Addressbook.config.AddressbookEventMap'
-    'Addressbook.model.Place'
-    'Addressbook.util.MessageBus'
+    'Addressbook.util.MessageBus',
     'Addressbook.config.AppConfig'
   ]
-  mixins: [
-    'Deft.mixin.Injectable'
-    'Addressbook.util.Filterable'
-  ]
+  mixins: [ 'Deft.mixin.Injectable']
+  alias: 'proxy.placesProxy'
   inject: [
     'messageBus'
     'appConfig'
@@ -41,19 +36,14 @@ Ext.define "Addressbook.store.PlacesStore",
     cfg = cfg or {}
 
     me.callParent( [ Ext.apply(
-      model: 'Addressbook.model.Place'
-      autoLoad: true
-      autoSync: false
-
-      listeners:
-        load: (store, records, successful, eOpts) ->
-          @onLoad(store, records, successful, eOpts)
+      api:
+        read: @appConfig.getEndpoint('placesRequestRead').url
+        create: @appConfig.getEndpoint('placesRequestCreate').url
+        update: @appConfig.getEndpoint('placesRequestUpdate').url
+        destroy: @appConfig.getEndpoint('placesRequestDestroy').url
       ,
       cfg ) ]
     )
 
-  onLoad: (store, records, successful, eOpts) ->
-    if Ext.isDefined(Ext.global.console)
-      Ext.global.console.log('Records loaded: ' + records.length)
 
 

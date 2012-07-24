@@ -26,6 +26,9 @@ Ext.define('Addressbook.model.BaseModel',
     type: 'auto'
     defaultValue: null
   ,
+    name: 'parent_id'
+    type: 'string'
+  ,
     name: 'lastUpdate'
     type: 'date'
     dateFormat: 'YYYY-MM-DD'

@@ -71,16 +71,17 @@ function ListAllAddress() {
 		
 		$pquery = "Select id, firstname, lastname, title ".
 				"FROM people LEFT JOIN links ON people.id=links.people ".
-				"WHERE links.places=" . $AddressGroup['id'];
+				"WHERE links.places=" . $AddressGroup[Place::ID];
 		$people = $DB->Execute($pquery);
 
-		$place['People'] = array();
+		$place['people'] = array();
 		while ($person = $people->FetchRow()) {
 			$jPerson = array();
+			$jPerson['parent_id'] = $AddressGroup[Place::ID];
 			foreach ($person as $key => $value){
 				$jPerson[$key] = GetValueString($key, $value, $results);
 			}
-			$place['People'][] = $jPerson;
+			$place['people'][] = $jPerson;
 		}
 		
 		$res->data[] = $place;
@@ -117,9 +118,9 @@ function ListPeople() {
 		$places = $DB->Execute($pquery);
 
 		$personArr['places'] = array();
-		$xml->startElement('Places');
 		while ($location = $places->FetchRow()) {
 			$locArr = array();
+			$locArr['parent_id'] = $person[Person::ID];
 			foreach ($location as $key => $value){
 				$locArr[$key]=GetValueString($key, $value, $results);
 			}

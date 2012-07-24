@@ -16,24 +16,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.require('Addressbook.model.Place')
-
-Ext.define "Addressbook.store.PlacesStore",
+Ext.define "Addressbook.store.PersonStore",
   extend: 'Addressbook.store.AbstractStore'
-  requires: [
-    'Addressbook.config.AddressbookEventMap'
-    'Addressbook.model.Place'
-    'Addressbook.util.MessageBus'
-    'Addressbook.config.AppConfig'
-  ]
-  mixins: [
-    'Deft.mixin.Injectable'
-    'Addressbook.util.Filterable'
-  ]
-  inject: [
-    'messageBus'
-    'appConfig'
-  ]
+  requires: [ 'Addressbook.config.AddressbookEventMap',
+              'Addressbook.model.Person',
+              'Addressbook.util.MessageBus',
+              'Addressbook.config.AppConfig']
+  mixins: [ 'Deft.mixin.Injectable',
+            'Addressbook.util.Filterable']
+  inject: ['messageBus', 'appConfig']
+  alias: 'Person'
 
   constructor: ( cfg ) ->
 
@@ -41,9 +33,22 @@ Ext.define "Addressbook.store.PlacesStore",
     cfg = cfg or {}
 
     me.callParent( [ Ext.apply(
-      model: 'Addressbook.model.Place'
+      model: 'Addressbook.model.Person'
       autoLoad: true
       autoSync: false
+      proxy:
+        api:
+          read: @appConfig.getEndpoint('personRequestRead').url
+          create: @appConfig.getEndpoint('personRequestCreate').url
+          update: @appConfig.getEndpoint('personRequestUpdate').url
+          destroy: @appConfig.getEndpoint('personRequestDestroy').url
+        writer:
+          root: 'data'
+        reader:
+          root: 'data'
+        startParam: undefined
+        limitParam: undefined
+        pageParam: undefined
 
       listeners:
         load: (store, records, successful, eOpts) ->

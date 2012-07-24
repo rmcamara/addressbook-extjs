@@ -36,14 +36,13 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     view: null
     messageBus: null
     isNew: false
+    model: null
 
   init: ->
-    model = @getView().getModel()
+    @setModel(@getView().getModel())
     @setIsNew(@getView().getIsNew())
     if !@getView().getIsNew()
-      @getForm().loadRecord(model)
-      # Ext.global.console.log(model.toHtmlString())
-      @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
+      @reload()
 
     @callParent( arguments )
 
@@ -58,7 +57,10 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
       @placesStore.add(model)
       @placesStore.sync(
         callback: =>
+          @setModel(model)
+          @reload()
           @getView().setLoading(false)
+
         success: (batch)=>
           newModel = batch.operations[0].records[0]
           @getMessageBus().fireEvent(@getEventMap().OPEN_EDITOR_PLACE, newModel)
@@ -72,8 +74,9 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
         callback: =>
           @getView().setLoading(false)
         success: =>
-          @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
-          @getView().setTitle(model.get('name'))
+          @setModel(model)
+          @reload()
+
       );
 
   onDelete: () ->
@@ -101,4 +104,12 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
 
   getForm: () ->
     @getPlaceForm().getForm()
+
+  reload: () ->
+    model = @getModel();
+    @getForm().loadRecord(model)
+    @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
+    @getView().setTitle(model.get('name'))
+
+
 )
