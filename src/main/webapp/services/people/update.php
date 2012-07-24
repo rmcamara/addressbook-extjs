@@ -22,8 +22,7 @@
 
 include(dirname(__FILE__)."/../common.php");
 
-$response = ListAllAddress();
+$response = CommitPerson();
 
 header("Content-type: application/json", true);
 echo $response->to_json();
-?>

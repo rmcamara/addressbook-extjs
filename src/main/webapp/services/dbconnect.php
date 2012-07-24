@@ -23,7 +23,7 @@
 
 	define('ADODB_DIR', dirname(realpath(__FILE__)) . '/../libs/adodb5/');
 
-	define('DSN', 'mysql://addressbot:camara@localhost/dev_address');
+	define('DSN', 'mysql://addressbot:camara@localhost/address');
 	define('NEWLINE', "\n");
 
 	include_once(ADODB_DIR.'adodb.inc.php');

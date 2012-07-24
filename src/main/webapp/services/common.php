@@ -53,13 +53,15 @@ function GetValueString($key, $value, $results){
 
 function ListAllAddress() {
 	global $DB;
+	global $request;
+    $res = new Response();
 
 	// validate the id is correct
 
 	$query = "SELECT * FROM places Order by " . Place::NAME;
 	$results = $DB->Execute($query);
 	
-	$jObj = array();
+	$res->data = array();
 	while ($AddressGroup = $results->FetchRow()) {
 		$place = array();
 		
@@ -81,232 +83,195 @@ function ListAllAddress() {
 			$place['People'][] = $jPerson;
 		}
 		
-		$jObj[] = $place;
+		$res->data[] = $place;
 	}
-	header("Content-type: application/json", true);
-	$jObj = array('data' => $jObj, 'success' => 'true');
-	echo json_encode($jObj);
+
+	$res->success = true;
+	$res->message = "Loaded People";
+	return $res;
 }
 
 function ListPeople() {
 	global $DB;
-
+	global $request;
+    $res = new Response();
+	
 	// validate the id is correct
+    $jRequest = get_object_vars($request->params);
 
 	$query = "SELECT * FROM " . Person::TABLE_NAME . " Order By " . Person::LASTNAME.", ". Person::FIRSTNAME;
 	$results = $DB->Execute($query);
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
-	$xml->startElement('data');
-
+	$res->data = array();
 	while ($person = $results->FetchRow()) {
-		$xml->startElement('Person');
+		$personArr = array();
+		
 		foreach ($person as $key => $value){
-			$xml->writeAttribute($key, GetValueString($key, $value, $results));
+			$personArr[$key] = GetValueString($key, $value, $results);
 		}
 
 		$pquery = "Select ". Place::ID . ", " . Place::NAME .
-		" FROM ". Place::TABLE_NAME .
-		" LEFT JOIN links ON ".Place::TABLE_NAME.".".Place::ID."=links.places ".
-		"WHERE links.people=" . $person[Person::ID];
+				" FROM ". Place::TABLE_NAME .
+				" LEFT JOIN links ON ".Place::TABLE_NAME.".".Place::ID."=links.places ".
+				"WHERE links.people=" . $person[Person::ID];
 		$places = $DB->Execute($pquery);
 
+		$personArr['places'] = array();
 		$xml->startElement('Places');
 		while ($location = $places->FetchRow()) {
-			$xml->startElement('Place');
+			$locArr = array();
 			foreach ($location as $key => $value){
-				$xml->writeAttribute($key, GetValueString($key, $value, $results));
+				$locArr[$key]=GetValueString($key, $value, $results);
 			}
-			$xml->endElement(); // end person
+			$personArr['places'][] = $locArr;
 		}
-		$xml->endElement();
-		$xml->endElement();
+		$res->data[] = $personArr;
 	}
 
-	$xml->endElement(); // end data
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	$res->success = true;
+	$res->message = "Loaded People";
+	return $res;
 }
 
-function LinkPeople() {
+function ListPersonLinksForLocation() {
 	global $DB;
+	global $request;
+    $res = new Response();
 
 	// validate the id is correct
+
+	$placeQuery = "SELECT * FROM links WHERE places=" . $request->params->id;
+	$places = $DB->Execute($placeQuery);
+	$placeIds = Array();
+	while ($place = $places->FetchRow()) {
+		array_push($placeIds, $place['people']);
+	}
 
 	$query = "SELECT " .Person::ID.", ".Person::FIRSTNAME.", " .Person::LASTNAME.
 	" FROM " . Person::TABLE_NAME;
 	$results = $DB->Execute($query);
 
-	$placeQuery = "SELECT * FROM links WHERE places=" . $_REQUEST[Person::ID];
-	$places = $DB->Execute($placeQuery);
-
-	$placeIds = Array();
-
-	while ($place = $places->FetchRow()) {
-		array_push($placeIds, $place['people']);
+	$res->data = array();
+	while ($place = $results->FetchRow()) {
+		$placeArr = array();
+		foreach ($place as $key => $value){
+			$placeArr[$key] = GetValueString($key, $value, $results);
+		}
+		if (in_array($place[Place::ID], $placeIds)){
+			$placeArr['selected'] = 'true';
+		}
+		$res->data[] = $placeArr;
 	}
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
-	$xml->startElement('data');
-
-	while ($person = $results->FetchRow()) {
-		$xml->startElement('Person');
-		foreach ($person as $key => $value){
-			$xml->writeAttribute($key, GetValueString($key, $value, $results));
-		}
-		if (in_array($person[Place::ID], $placeIds)){
-			$xml->writeAttribute('selected', 'true');
-		}
-		$xml->endElement();
-	}
-
-	$xml->endElement(); // end data
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	$res->success = true;
+	$res->message = "Listed people for place: ".$request->params->id;
+	return $res;
 }
 
-function LinkLocation() {
+function ListLocationLinksForPerson() {
 	global $DB;
+	global $request;
+    $res = new Response();
 
 	// validate the id is correct
 
-	$query = "SELECT ".Place::ID.", ".Place::NAME.", " .Place::STATE.", " .Place::CITY.
-	" FROM " . Place::TABLE_NAME;
-	$results = $DB->Execute($query);
-
-	$placeQuery = "SELECT * FROM links WHERE people=" . $_REQUEST[Person::ID];
+	$placeQuery = "SELECT * FROM links WHERE people=" . $request->params->id;
 	$people = $DB->Execute($placeQuery);
-
 	$peopleIds = Array();
-
 	while ($person = $people->FetchRow()) {
 		array_push($peopleIds, $person['places']);
 	}
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
-	$xml->startElement('data');
-
+	$query = "SELECT ".Place::ID.", ".Place::NAME.", " .Place::STATE.", " .Place::CITY.
+			 " FROM " . Place::TABLE_NAME;
+	$results = $DB->Execute($query);
+	
+	$res->data = array();
 	while ($person = $results->FetchRow()) {
-		$xml->startElement('Places');
+		$personArr = array();
 		foreach ($person as $key => $value){
-			$xml->writeAttribute($key, GetValueString($key, $value, $results));
+			$personArr[$key] = GetValueString($key, $value, $results);
 		}
 		if (in_array($person[Place::ID], $peopleIds)){
-			$xml->writeAttribute('selected', 'true');
+			$personArr['selected'] = 'true';
 		}
-		$xml->endElement();
+		$res->data[] = $personArr;
 	}
 
-	$xml->endElement(); // end data
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	$res->success = true;
+	$res->message = "Listed loctions for person: ".$request->params->id;
+	return $res;
 }
 
 function UpdateLinks($mode) {
 	global $DB;
+	global $request;
+    $res = new Response();
+    $jRequest = get_object_vars($request->params);
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
+    $linkCount = $request->params->count;
 
 	// Remove links no longer used.
-	$xml->startElement('delete');
-	$query = "DELETE FROM links WHERE ";
-	$query .= $mode ? "places=" : "people=";
-	$query .= $mode ? $_REQUEST[Place::ID] : $_REQUEST[Person::ID];
-	$query .= " AND ";
-	$query .= $mode ? "people" : "places";
-	$query .= " NOT IN (";
-
-	$linkCount = $_REQUEST['count'];
+	$deleteQuery = "DELETE FROM links WHERE ";
+	$deleteQuery .= $mode ? "places=" : "people=";
+	$deleteQuery .= $request->params->id;
+	$deleteQuery .= " AND ";
+	$deleteQuery .= $mode ? "people" : "places";
+	$deleteQuery .= " NOT IN (";
 	for ($x = 0; $x < $linkCount; $x++){
 		if ($x > 0){
-			$query .= ", ";
+			$deleteQuery .= ", ";
 		}
-		$query .= $_REQUEST['lid'.$x];
+		$deleteQuery .= $jRequest['lid'.$x];
 	}
-	$query .= ")";
-
-	$DB->Execute($query);
-	$xml->text($query);
-	$xml->endElement();
+	$deleteQuery .= ")";
+	$DB->Execute($deleteQuery);
 
 	for ($x = 0; $x < $linkCount; $x++){
 		$query = "Select * FROM links WHERE ";
 		$query .= $mode ? "places=" : "people=";
-		$query .= $mode ? $_REQUEST[Place::ID] : $_REQUEST[Person::ID];
+		$query .= $request->params->id;
 		$query .= " AND ";
 		$query .= $mode ? "people=" : "places=";
-		$query .= $_REQUEST['lid'.$x];
-		$xml->startElement('select');
+		$query .= $jRequest['lid'.$x];
+		
 		$results = $DB->Execute($query);
-		$xml->text($query);
+		
 		if ($results->FetchRow() == null){
 			$query = "INSERT INTO links (";
 			$query .= $mode ? "places" : "people";
 			$query .= ", ";
 			$query .= $mode ? "people" : "places";
 			$query .= ") VALUES (";
-			$query .= $mode ? $_REQUEST[Place::ID] : $_REQUEST[Person::ID];
+			$query .= $request->params->id;
 			$query .= ", ";
 			$query .= $_REQUEST['lid'.$x];
 			$query .= ")";
 
-			$xml->startElement('insert');
-			$xml->text($query);
-			$xml->endElement();
 			$DB->Execute($query);
 		}
-		$xml->endElement();
 	}
 
 
-	$xml->text("complete");
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	$res->success = true;
+	$res->message = "Updated list of links";
+	return $res;
 }
 
 function GetPerson() {
 	global $DB;
+	global $request;
+	$res = new Response();
 
-	$fields = array( Person::ID => $_REQUEST[Person::ID]);
+	$fields = array( Person::ID => $request->params->id);
 
 	$query = "SELECT * FROM ".Person::TABLE_NAME.generateWhere($fields);
 	$results = $DB->Execute($query);
 
-	$xml = new XMLWriter();
-	$xml->openMemory();
-	$xml->setIndent(true);
-	$xml->startDocument('1.0','UTF-8');
-	$xml->startElement('response');
-	$xml->startElement('data');
-
-	while ($person = $results->FetchRow()) {
-		$xml->startElement('Person');
+	while ($person = $results->FetchRow()) { // only ever one record
+		$personArr = array();
 		foreach ($person as $key => $value){
-			$xml->writeAttribute($key, GetValueString($key, $value, $results));
+			$personArr[$key] = GetValueString($key, $value, $results);
 		}
 
 		$pquery = "Select * ".
@@ -315,53 +280,45 @@ function GetPerson() {
 				"WHERE links.people=" . $person['id'];
 		$places = $DB->Execute($pquery);
 
-		$xml->startElement('Places');
+		$personArr['locations'] = array();
 		while ($place = $places->FetchRow()) {
-			$xml->startElement('Place');
+			$placeArr = array();
 			foreach ($place as $key => $value){
-				$xml->writeAttribute($key, GetValueString($key, $value, $results));
+				$placeArr[$key] = GetValueString($key, $value, $results);
 			}
-			$xml->endElement(); // end person
+			$personArr['locations'][] = $placeArr;
 		}
-		$xml->endElement();
-		$xml->endElement();
+		
+		$res->data = $personArr;
 	}
-
-	$xml->endElement(); // end data
-	$xml->endElement(); // end response
-	$xml->endDocument();
-	header("Content-type: text/xml");
-	print $xml->outputMemory(true);
+	
+	$res->success = true;
+	$res->message = "Loaded Record";
+	return $res;
 }
 
 function CommitPerson(){
 	global $DB;
+	global $request;
+	$res = new Response();
 
-	if($_REQUEST[Person::ID] > 0){
-		$record[Person::ID] = $_REQUEST[Person::ID];
-	}
-	$record[Person::TITLE] = $_REQUEST[Person::TITLE];
-	$record[Person::FIRSTNAME] = $_REQUEST[Person::FIRSTNAME];
-	$record[Person::LASTNAME] = $_REQUEST[Person::LASTNAME];
-	$record[Person::BIRTHDATE] = $_REQUEST[Person::BIRTHDATE];
-	$record[Person::EMAIL] = $_REQUEST[Person::EMAIL];
-	$record[Person::CELLPHONE] = $_REQUEST[Person::CELLPHONE];
-	$record[Person::DETAILS] = $_REQUEST[Person::DETAILS];
-
-	if($_REQUEST[Person::ID] < 1){
+	$jRequest = get_object_vars($request->params);
+	if($request->params->id < 1){
 		$DB->AutoExecute(Person::TABLE_NAME,$record, 'INSERT');
-
-		// update the new id attribute
-		$sql = "select " . Person::ID . " from " . Person::TABLE_NAME . generateWhere($record) .
+		
+		// update the id.
+		$sql = "select " . Person::ID . " from " . Person::TABLE_NAME . generateWhere($jRequest) .
 		" Order by `" . Person::LAST_UPDATE . "` DESC";
-		$_REQUEST[Place::ID] = $DB->GetOne($sql);
+		$request->params->id = $DB->GetOne($sql);
 	}
 	else{
-		$DB->AutoExecute(Person::TABLE_NAME,$record, 'UPDATE', Person::ID."=".$_REQUEST[Person::ID], false);
+		$DB->AutoExecute(Person::TABLE_NAME,$jRequest, 'UPDATE', Person::ID."=".$request->params->id, false);
 	}
-
-	// return the updated person
-	GetPerson();
+		
+	$res->success = true;
+	$res->message = "Updated Record";
+	$res->data = GetPerson()->data;
+	return $res;
 }
 
 function GetLocation() {
@@ -385,11 +342,6 @@ function GetLocation() {
 				" LEFT JOIN links ON ".Person::TABLE_NAME.'.'.Person::ID."=links.people ".
 				"WHERE links.places=" . $place[Place::ID];
 		$people = $DB->Execute($pquery);
-
-		$pquery = "Select id, firstname, lastname, title ".
-                    "FROM people LEFT JOIN links ON people.id=links.people ".
-        			"WHERE links.places=" . $placeArr['id'];
-        $people = $DB->Execute($pquery);
 
         $placeArr['People'] = array();
         while ($person = $people->FetchRow()) {
