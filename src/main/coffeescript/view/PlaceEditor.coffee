@@ -138,10 +138,23 @@ Ext.define 'Addressbook.view.PlaceEditor',
           flex: 2
           bodyPadding: '20'
         ,
-          xtype: 'panel'
+          xtype: 'grid'
+          itemId: 'associatedItemsGrid'
           title: 'Associated Items'
           padding: "5 0 0 0"
           flex: 3
+          store: @getModel().people()
+          viewConfig:
+            emptyText: 'No linked people'
+            deferEmptyText: false
+          columns:[
+            height: 0
+            flex: 1
+            dataIndex: 'lastName'
+            sortable: false
+            renderer: (value, metaData, record) ->
+              record.get('title') + ' ' + record.get('firstname') + ' ' + record.get('lastname')
+          ]
         ]
       ]
     )

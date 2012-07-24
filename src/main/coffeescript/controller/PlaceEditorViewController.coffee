@@ -18,19 +18,24 @@
 #
 Ext.define( 'Addressbook.controller.PlaceEditorViewController',
   extend: 'Addressbook.controller.BaseViewController'
-  requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Addressbook.controller.BaseViewController',
-              'Addressbook.util.MessageBus' ]
+  requires: [
+    'Addressbook.config.AddressbookEventMap'
+    'Addressbook.controller.BaseViewController'
+    'Addressbook.util.MessageBus'
+    'Ext.Template'
+  ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus', 'placesStore']
 
   control:
     placeForm: true
     currentDetailsPanel: true
+    associatedItemsGrid: true
     saveBtn:
       click: 'onSave'
     deleteBtn:
       click: 'onDelete'
+
 
   config:
     view: null
@@ -110,6 +115,5 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     @getForm().loadRecord(model)
     @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
     @getView().setTitle(model.get('name'))
-
-
+    @getAssociatedItemsGrid().reconfigure(model.people())
 )
