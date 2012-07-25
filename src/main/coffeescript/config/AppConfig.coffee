@@ -27,13 +27,17 @@ Ext.define( 'Addressbook.config.AppConfig',
         placesRequestDestroy:
           url: 'data/places/destroy.json'
         personRequestRead:
-          url: 'services/person/read.json'
+          url: 'data/people/read.json'
         personRequestCreate:
-          url: 'services/person/update.json'
+          url: 'data/people/update.json'
         personRequestUpdate:
-          url: 'services/person/update.json'
+          url: 'data/people/update.json'
         personRequestDestroy:
-          url: 'services/person/destroy.json'
+          url: 'data/people/destroy.json'
+        linkPersonRequestRead:
+          url: 'data/people/links/read.json'
+        linkPersonRequestUpdate:
+          url: 'data/people/links/update.json'
       defaults:
         urlPrefix: 'data/'
         urlSuffix: '.json'
@@ -53,16 +57,20 @@ Ext.define( 'Addressbook.config.AppConfig',
         placesRequestDestroy:
           url: 'services/places/destroy.php'
         personRequestRead:
-          url: 'services/person/read.php'
+          url: 'services/people/read.php'
         personRequestCreate:
-          url: 'services/person/update.php'
+          url: 'services/people/update.php'
         personRequestUpdate:
-          url: 'services/person/update.php'
+          url: 'services/people/update.php'
         personRequestDestroy:
-          url: 'services/person/destroy.php'
+          url: 'services/people/destroy.php'
+        linkPersonRequestRead:
+          url: 'services/people/links/read.php'
+        linkPersonRequestUpdate:
+          url: 'services/people/links/update.php'
       defaults:
         urlPrefix: 'services/'
-        urlSuffix: '.json'
+        urlSuffix: '.php'
         dataRoot: ''
 
 

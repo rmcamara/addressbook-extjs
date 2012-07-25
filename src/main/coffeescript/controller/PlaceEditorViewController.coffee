@@ -22,7 +22,7 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     'Addressbook.config.AddressbookEventMap'
     'Addressbook.controller.BaseViewController'
     'Addressbook.util.MessageBus'
-    'Ext.Template'
+    'Addressbook.view.PeopleLinkWindow'
   ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus', 'placesStore']
@@ -35,6 +35,8 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
       click: 'onSave'
     deleteBtn:
       click: 'onDelete'
+    linkBtn:
+      click: 'onLink'
 
 
   config:
@@ -93,6 +95,13 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
       scope: @
     )
 
+  onLink: () ->
+    linkPopup = Ext.create('Addressbook.view.PeopleLinkWindow',
+      locationId: @getModel().getId()
+    )
+    linkPopup.on('beforedestroy', @refreshAssociated, @)
+    linkPopup.show()
+
   confirmDelete: (buttonId) ->
     if (buttonId == 'yes')
       if @getIsNew()
@@ -116,4 +125,13 @@ Ext.define( 'Addressbook.controller.PlaceEditorViewController',
     @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
     @getView().setTitle(model.get('name'))
     @getAssociatedItemsGrid().reconfigure(model.people())
+
+  refreshAssociated: ->
+    model = @getModel()
+    @placesStore.load(
+      scope: this
+      callback: ->
+        model = @placesStore.getById(@getView().getModel().getId())
+        @getAssociatedItemsGrid().reconfigure(model.people())
+    )
 )

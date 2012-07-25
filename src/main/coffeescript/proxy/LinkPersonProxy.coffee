@@ -16,16 +16,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define "Addressbook.store.PersonStore",
-  extend: 'Addressbook.store.AbstractStore'
-  requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Addressbook.model.Person',
-              'Addressbook.util.MessageBus',
-              'Addressbook.config.AppConfig']
-  mixins: [ 'Deft.mixin.Injectable',
-            'Addressbook.util.Filterable']
-  inject: ['messageBus', 'appConfig']
-  alias: 'Person'
+Ext.define "Addressbook.proxy.LinkPersonProxy",
+  extend: 'Addressbook.proxy.AbstractProxy'
+  requires: [
+    'Addressbook.config.AddressbookEventMap'
+    'Addressbook.util.MessageBus',
+    'Addressbook.config.AppConfig'
+  ]
+  mixins: [ 'Deft.mixin.Injectable']
+  alias: 'proxy.linkPersonProxy'
+  inject: [
+    'messageBus'
+    'appConfig'
+  ]
 
   constructor: ( cfg ) ->
 
@@ -33,19 +36,18 @@ Ext.define "Addressbook.store.PersonStore",
     cfg = cfg or {}
 
     me.callParent( [ Ext.apply(
-      model: 'Addressbook.model.Person'
-      autoLoad: true
-      autoSync: false
-
-      listeners:
-        load: (store, records, successful, eOpts) ->
-          @onLoad(store, records, successful, eOpts)
+      filterParam: 'id'
+      api:
+        read: @appConfig.getEndpoint('linkPersonRequestRead').url
+        update: @appConfig.getEndpoint('linkPersonRequestUpdate').url
       ,
       cfg ) ]
     )
 
-  onLoad: (store, records, successful, eOpts) ->
-    if Ext.isDefined(Ext.global.console)
-      Ext.global.console.log('Records loaded: ' + records.length)
+  encodeFilters: (filters) ->
+    filterString = []
+    for filter in filters
+      filterString.push(filter.value)
+    filterString.join(',')
 
 

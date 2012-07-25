@@ -98,10 +98,19 @@ function ListPeople() {
     $res = new Response();
 	
 	// validate the id is correct
-    $jRequest = get_object_vars($request->params);
 
-	$query = "SELECT * FROM " . Person::TABLE_NAME . " Order By " . Person::LASTNAME.", ". Person::FIRSTNAME;
-	$results = $DB->Execute($query);
+    if (isset($_REQUEST['filter'])){
+        $params = json_decode(stripslashes($_REQUEST['filter']));
+        $query = "SELECT * FROM " . Person::TABLE_NAME .
+                 " LEFT JOIN links ON " . Person::TABLE_NAME . "." . Person::ID . "=links.people" .
+                 " WHERE links.places=" . $params[0]->value .
+                 " Order By " . Person::LASTNAME . ", " . Person::FIRSTNAME;
+        $results = $DB->Execute($query);
+    }
+    else{
+	    $query = "SELECT * FROM " . Person::TABLE_NAME . " Order By " . Person::LASTNAME.", ". Person::FIRSTNAME;
+	    $results = $DB->Execute($query);
+	}
 
 	$res->data = array();
 	while ($person = $results->FetchRow()) {
@@ -139,9 +148,9 @@ function ListPersonLinksForLocation() {
 	global $request;
     $res = new Response();
 
+    $id = $_REQUEST[Place::ID];
 	// validate the id is correct
-
-	$placeQuery = "SELECT * FROM links WHERE places=" . $request->params->id;
+	$placeQuery = "SELECT * FROM links WHERE places=" . $id;
 	$places = $DB->Execute($placeQuery);
 	$placeIds = Array();
 	while ($place = $places->FetchRow()) {
@@ -155,6 +164,7 @@ function ListPersonLinksForLocation() {
 	$res->data = array();
 	while ($place = $results->FetchRow()) {
 		$placeArr = array();
+		$placeArr['parent_id'] = $id;
 		foreach ($place as $key => $value){
 			$placeArr[$key] = GetValueString($key, $value, $results);
 		}
@@ -165,7 +175,7 @@ function ListPersonLinksForLocation() {
 	}
 
 	$res->success = true;
-	$res->message = "Listed people for place: ".$request->params->id;
+	$res->message = "Listed people for place: ".$id;
 	return $res;
 }
 
@@ -176,7 +186,8 @@ function ListLocationLinksForPerson() {
 
 	// validate the id is correct
 
-	$placeQuery = "SELECT * FROM links WHERE people=" . $request->params->id;
+    $id = $_REQUEST[Person::ID];
+	$placeQuery = "SELECT * FROM links WHERE people=" . $id;
 	$people = $DB->Execute($placeQuery);
 	$peopleIds = Array();
 	while ($person = $people->FetchRow()) {
@@ -190,6 +201,7 @@ function ListLocationLinksForPerson() {
 	$res->data = array();
 	while ($person = $results->FetchRow()) {
 		$personArr = array();
+		$personArr['parent_id'] = $id;
 		foreach ($person as $key => $value){
 			$personArr[$key] = GetValueString($key, $value, $results);
 		}
@@ -200,63 +212,57 @@ function ListLocationLinksForPerson() {
 	}
 
 	$res->success = true;
-	$res->message = "Listed loctions for person: ".$request->params->id;
+	$res->message = "Listed locations for person: ".$id;
 	return $res;
 }
 
 function UpdateLinks($mode) {
-	global $DB;
 	global $request;
     $res = new Response();
-    $jRequest = get_object_vars($request->params);
 
-    $linkCount = $request->params->count;
+    $linkCount = $request->params;
 
-	// Remove links no longer used.
-	$deleteQuery = "DELETE FROM links WHERE ";
-	$deleteQuery .= $mode ? "places=" : "people=";
-	$deleteQuery .= $request->params->id;
-	$deleteQuery .= " AND ";
-	$deleteQuery .= $mode ? "people" : "places";
-	$deleteQuery .= " NOT IN (";
-	for ($x = 0; $x < $linkCount; $x++){
-		if ($x > 0){
-			$deleteQuery .= ", ";
-		}
-		$deleteQuery .= $jRequest['lid'.$x];
-	}
-	$deleteQuery .= ")";
-	$DB->Execute($deleteQuery);
+    if (is_array($request->params)){
+        for ($x = 0; $x < count($request->params); $x++){
+            ProcessLinkUpdate($mode, $res, $request->params[$x]);
+        }
+    }else{
+        ProcessLinkUpdate($mode, $res, $request->params);
+    }
 
-	for ($x = 0; $x < $linkCount; $x++){
-		$query = "Select * FROM links WHERE ";
-		$query .= $mode ? "places=" : "people=";
-		$query .= $request->params->id;
-		$query .= " AND ";
-		$query .= $mode ? "people=" : "places=";
-		$query .= $jRequest['lid'.$x];
-		
-		$results = $DB->Execute($query);
-		
-		if ($results->FetchRow() == null){
-			$query = "INSERT INTO links (";
-			$query .= $mode ? "places" : "people";
-			$query .= ", ";
-			$query .= $mode ? "people" : "places";
-			$query .= ") VALUES (";
-			$query .= $request->params->id;
-			$query .= ", ";
-			$query .= $_REQUEST['lid'.$x];
-			$query .= ")";
+    $res->data = $request->params;
+    $res->success = true;
+    $res->message = "Updated list of links";
+    return $res;
+}
 
-			$DB->Execute($query);
-		}
-	}
+function ProcessLinkUpdate($mode, $res, $model){
+    global $DB;
+	global $request;
 
+    if (!$model->selected){
+        // Remove links no longer used.
+        $deleteQuery = "DELETE FROM links WHERE ";
+        $deleteQuery .= $mode ? "places=" : "people=";
+        $deleteQuery .= $model->parent_id;
+        $deleteQuery .= " AND ";
+        $deleteQuery .= $mode ? "people=" : "places=";
+        $deleteQuery .= $model->id;
+        $DB->Execute($deleteQuery);
+    }
+    else{
+        $query = "INSERT INTO links (";
+        $query .= $mode ? "places" : "people";
+        $query .= ", ";
+        $query .= $mode ? "people" : "places";
+        $query .= ") VALUES (";
+        $query .= $model->parent_id;
+        $query .= ", ";
+        $query .= $model->id;
+        $query .= ")";
 
-	$res->success = true;
-	$res->message = "Updated list of links";
-	return $res;
+        $DB->Execute($query);
+    }
 }
 
 function GetPerson() {

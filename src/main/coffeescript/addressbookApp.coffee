@@ -3,6 +3,7 @@ Ext.Loader.setConfig(
   disableCaching: false
   paths:
     'Addressbook': 'app'
+    'Ext.ux': 'libs/ext/src/ux'
 )
 
 Ext.onReady ->

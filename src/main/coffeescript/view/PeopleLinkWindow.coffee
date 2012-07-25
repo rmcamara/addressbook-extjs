@@ -34,8 +34,8 @@ Ext.define 'Addressbook.view.PeopleLinkWindow',
   title: 'Link people to a location'
   closable: true
   modal: true
-  height: 500
-  width: 700
+  height: 450
+  width: 500
   layout: 'fit'
 
   config:
@@ -48,31 +48,26 @@ Ext.define 'Addressbook.view.PeopleLinkWindow',
       items: [
         xtype: 'grid'
         itemId: 'linkGrid'
-        bodyPadding: '10'
         store: Ext.create('Ext.data.JsonStore',
           autoLoad:false
           )
         columnLines: true
         frame: false
         columns: [
+          header: 'Linked'
           xtype: 'checkcolumn'
-          dataIndex: 'linked'
-          width: 35
-          sortable: false
+          dataIndex: 'selected'
+          width: 60
           editor:
             xtype: 'checkbox',
             cls: 'x-grid-checkheader-editor'
         ,
-          header: 'Title'
-          width: 60
-          dataIndex: 'title'
-        ,
           header: 'First Name'
-          width: 275
+          width: 175
           dataIndex: 'firstname'
         ,
           header: 'Last Name'
-          width: 275
+          width: 175
           dataIndex: 'lastname'
         ]
       ]

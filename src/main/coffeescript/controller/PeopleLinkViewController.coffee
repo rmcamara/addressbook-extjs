@@ -22,13 +22,14 @@ Ext.define( 'Addressbook.controller.PeopleLinkViewController',
     'Addressbook.config.AddressbookEventMap'
     'Addressbook.controller.BaseViewController'
     'Addressbook.util.MessageBus'
-    'Addressbook.model.Person'
+    'Addressbook.model.LinkPerson'
   ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus']
 
   control:
-    saveBtn: true
+    saveBtn:
+      click: 'onSave'
     cancelBtn:
       click: 'onCancel'
     linkGrid: true
@@ -36,27 +37,27 @@ Ext.define( 'Addressbook.controller.PeopleLinkViewController',
   config:
     view: null
     messageBus: null
+    store: null
 
 
   init: ->
     store = Ext.create('Ext.data.Store',
-      model: 'Addressbook.model.Person'
-      proxy:
-        type: 'ajax'
-        api:
-          read: @appConfig.getEndpoint('linkPersonRequestRead').url
-          update: @appConfig.getEndpoint('linkPersonRequestUpdate').url
-        writer:
-          type: 'json'
-          root: 'data'
-        reader:
-          type: 'json'
-          root: 'data'
-        startParam: undefined
-        limitParam: undefined
-        pageParam: undefined
+      model: 'Addressbook.model.LinkPerson'
+      remoteFilter: true
+      filters: [
+        property: 'id'
+        value: @getView().getLocationId()
+      ]
+      sorters: [
+        property: 'selected'
+        direction: 'DESC'
+      ,
+        property: 'lastname'
+        direction: 'ASC'
+      ]
     )
     store.load()
+    @setStore(store)
 
     @getLinkGrid().reconfigure(store)
     @callParent( arguments )
@@ -66,4 +67,15 @@ Ext.define( 'Addressbook.controller.PeopleLinkViewController',
     @getView().hide(null, =>
       @getView().destroy()
     )
+
+  onSave: ->
+    store = @getStore()
+    if store.getUpdatedRecords()?.length?
+      @getView().setLoading('Saving...')
+      store.sync(
+        callback: =>
+          @getView().setLoading(false)
+        success: =>
+          @onCancel()
+      )
 )
