@@ -57,8 +57,6 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
             '</div>'
           ]
         ]
-        collapsible: true,
-        animCollapse: false,
         columns:[
           header: 'Location Name'
           flex: 2
@@ -106,6 +104,7 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
             itemId: 'refreshBtn'
             text: 'Refresh'
             tooltip: 'Refresh Records'
+            icon: './resources/themes/images/default/grid/refresh.gif'
           ,
             xtype:'tbspacer'
             width: 20
@@ -117,9 +116,11 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
           ,
             itemId: 'addPlaceBtn'
             text: 'Place'
+            icon: './resources/images/addPlace.png'
           ,
             itemId: 'addPersonBtn'
             text: 'Person'
+            icon: './resources/images/addPerson.png'
           ]
         ]
       ]

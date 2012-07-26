@@ -18,10 +18,13 @@
 #
 Ext.define 'Addressbook.view.AddressbookViewport',
   extend: 'Ext.container.Viewport'
-  requires: [ 'Addressbook.view.LoginWindow',
-              'Addressbook.config.AddressbookEventMap',
-              'Addressbook.util.MessageBus',
-              'Addressbook.view.MainTabs']
+  requires: [
+    'Addressbook.view.LoginWindow'
+    'Addressbook.config.AddressbookEventMap'
+    'Addressbook.util.MessageBus'
+    'Addressbook.view.MainTabs'
+    'Ext.ux.layout.Center'
+  ]
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   inject: [ 'messageBus' ]
   renderTo: Ext.getBody()
@@ -31,7 +34,7 @@ Ext.define 'Addressbook.view.AddressbookViewport',
 
   padding: 10
   layout:
-    type: 'fit'
+    type: 'ux.center'
 
   initComponent: ->
     me = this

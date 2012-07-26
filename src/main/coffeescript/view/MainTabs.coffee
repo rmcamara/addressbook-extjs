@@ -27,6 +27,8 @@ Ext.define 'Addressbook.view.MainTabs',
   controller:'Addressbook.controller.MainTabsViewController'
 
   plain: true
+  maxWidth: 1000
+  maxHeight: 700
 
   initComponent: ->
     me = this
