@@ -26,7 +26,7 @@ Ext.define( 'Addressbook.controller.PlaceListingViewController',
   inject: [ 'appConfig' ,'messageBus', 'placesStore']
 
   init: ->
-    @setFilterFields(['name', 'address', 'address2', 'details', 'city', 'state', 'zipcode'])
+    @setFilterFields(['name', 'address', 'address2', 'details', 'city', 'state', 'zipcode', 'people.firstname', 'people.lastname'])
     @setListingStore(@placesStore)
     @callParent( arguments )
 

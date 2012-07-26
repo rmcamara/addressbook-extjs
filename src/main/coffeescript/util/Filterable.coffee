@@ -16,14 +16,18 @@ Ext.define( "Addressbook.util.Filterable",
     @filter(
       Ext.create( 'Ext.util.Filter',
         filterFn: ( thisModel ) =>
-          match = false
 
           for propertyName in fieldNames
             if regex.test( String( thisModel.get( propertyName ) ) )
-              match = true
-              break
+              return true
 
-          return match
+            parentChild = propertyName.split(".")
+            if (parentChild.length > 1)
+              childStore = thisModel[parentChild[0]]()
+              if (childStore.find(parentChild[1], regex) >= 0)
+                return true
+
+          return false
       )
     )
 
