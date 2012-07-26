@@ -16,15 +16,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define 'Addressbook.view.controls.PersonRowExpander',
+Ext.define 'Addressbook.view.controls.AssociatedRowExpander',
   extend: 'Ext.ux.RowExpander'
-  alias: 'plugin.personrowexpander'
+  alias: 'plugin.assocrowexpander'
   requires: [
     'Ext.ux.RowExpander'
   ]
 
   getRowBodyFeatureData: (data, idx, record, orig) ->
     me = this;
-    data.links = record.getAssociatedData().people
+    data = Ext.applyIf(data, record.getAssociatedData())
     me.callParent(arguments)
 

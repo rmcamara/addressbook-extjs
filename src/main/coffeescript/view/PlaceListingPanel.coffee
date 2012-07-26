@@ -26,7 +26,7 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
     'Addressbook.model.Place'
     'Addressbook.store.PlacesStore'
     'Addressbook.controller.PlaceListingViewController'
-    'Addressbook.view.controls.PersonRowExpander'
+    'Addressbook.view.controls.AssociatedRowExpander'
   ]
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   inject: ['placesStore']
@@ -48,13 +48,13 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
           deferEmptyText: false
         columnLines: true
         plugins: [
-          ptype: 'personrowexpander'
+          ptype: 'assocrowexpander'
           rowBodyTpl: [
-            '<p>'
-            '<tpl for="links">'
-            '{firstname} {lastname} <br/>'
+            '<div class="assocrow-people">'
+            '<tpl for="people">'
+            '<b>&mdash;</b> <i>{firstname} {lastname} </i><br/>'
             '</tpl>'
-            '</p>'
+            '</div>'
           ]
         ]
         collapsible: true,
