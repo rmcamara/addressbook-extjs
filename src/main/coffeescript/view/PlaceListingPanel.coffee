@@ -19,11 +19,15 @@
 Ext.define 'Addressbook.view.PlaceListingPanel',
   extend: 'Ext.panel.Panel'
   alias: 'widget.addressbook-PlaceListingPanel'
-  requires: [ 'Ext.panel.Panel',
-              'Ext.grid.Panel',
-              'Addressbook.model.Place',
-              'Addressbook.store.PlacesStore',
-              'Addressbook.controller.PlaceListingViewController']
+  requires: [
+    'Ext.panel.Panel'
+    'Ext.grid.Panel'
+    'Ext.ux.RowExpander'
+    'Addressbook.model.Place'
+    'Addressbook.store.PlacesStore'
+    'Addressbook.controller.PlaceListingViewController'
+    'Addressbook.view.controls.PersonRowExpander'
+  ]
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   inject: ['placesStore']
   controller: 'Addressbook.controller.PlaceListingViewController'
@@ -43,6 +47,18 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
           emptyText: 'No places defined'
           deferEmptyText: false
         columnLines: true
+        plugins: [
+          ptype: 'personrowexpander'
+          rowBodyTpl: [
+            '<p>'
+            '<tpl for="links">'
+            '{firstname} {lastname} <br/>'
+            '</tpl>'
+            '</p>'
+          ]
+        ]
+        collapsible: true,
+        animCollapse: false,
         columns:[
           header: 'Location Name'
           flex: 2
