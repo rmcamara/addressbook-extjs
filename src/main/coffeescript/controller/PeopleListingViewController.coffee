@@ -16,43 +16,27 @@
 #    You should have received a copy of the GNU General Public License
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
-Ext.define "Addressbook.store.PersonStore",
-  extend: 'Addressbook.store.AbstractStore'
+Ext.define( 'Addressbook.controller.PeopleListingViewController',
+  extend: 'Addressbook.controller.AbstractListingViewController'
   requires: [
     'Addressbook.config.AddressbookEventMap'
-    'Addressbook.model.Person'
+    'Addressbook.controller.AbstractListingViewController'
     'Addressbook.util.MessageBus'
-    'Addressbook.config.AppConfig'
+    'Ext.util.Filter'
   ]
-  mixins: [
-    'Deft.mixin.Injectable'
-    'Addressbook.util.Filterable'
-  ]
-  inject: [
-    'messageBus'
-    'appConfig'
-  ]
-  alias: 'store.person'
+  mixins: [ 'Deft.mixin.Injectable' ]
+  inject: [ 'appConfig' ,'messageBus', 'personStore']
 
-  constructor: ( cfg ) ->
+  init: ->
+    @setFilterFields(['firstname', 'lastname', 'email', 'places.firstname', 'places.lastname'])
+    @setListingStore(@personStore)
+    @callParent( arguments )
 
-    me = this
-    cfg = cfg or {}
+  switchDisplayMode: (button) ->
+    @getMessageBus().fireEvent(@getEventMap().SWITCH_DISPLAY_MODE, false)
+    @callParent( arguments )
 
-    me.callParent( [ Ext.apply(
-      model: 'Addressbook.model.Person'
-      autoLoad: true
-      autoSync: false
-
-      listeners:
-        load: (store, records, successful, eOpts) ->
-          @onLoad(store, records, successful, eOpts)
-      ,
-      cfg ) ]
-    )
-
-  onLoad: (store, records, successful, eOpts) ->
-    if Ext.isDefined(Ext.global.console)
-      Ext.global.console.log('Person Records loaded: ' + records.length)
-
-
+  openEditor: (view, record) ->
+    @openPersonEditor(record)
+    @callParent( arguments )
+)

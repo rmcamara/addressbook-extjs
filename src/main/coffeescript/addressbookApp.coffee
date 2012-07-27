@@ -12,8 +12,9 @@ Ext.onReady ->
       className: 'Addressbook.config.AppConfig'
       parameters: [ environment: 'PRODUCTION_ENV' ]
     messageBus: 'Addressbook.util.MessageBus'
-    personStore: 'Addressbook.store.PersonStore'
+
     placesStore: 'Addressbook.store.PlacesStore'
+    personStore: 'Addressbook.store.PersonStore'
   )
 
 Ext.application

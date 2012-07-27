@@ -18,7 +18,7 @@
 #
 
 Ext.define('Addressbook.model.LinkPerson',
-  extend: 'Addressbook.model.Person'
+  extend: 'Addressbook.model.BaseModel'
   requires: [
     'Addressbook.model.BaseModel'
     'Addressbook.proxy.LinkPersonProxy'
@@ -27,6 +27,16 @@ Ext.define('Addressbook.model.LinkPerson',
   fields: [
     name: 'selected'
     type: 'boolean'
+  ,
+    name: 'firstname'
+    type: 'string'
+    defaultValue: null
+  ,
+    name: 'lastname'
+    type: 'string'
+  ,
+    name: 'title'
+    type: 'string'
   ]
 
   proxy:

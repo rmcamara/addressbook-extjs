@@ -34,6 +34,7 @@ Ext.define "Addressbook.store.PlacesStore",
     'messageBus'
     'appConfig'
   ]
+  alias: 'store.places'
 
   constructor: ( cfg ) ->
 

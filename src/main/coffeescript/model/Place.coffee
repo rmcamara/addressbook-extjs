@@ -55,7 +55,7 @@ Ext.define('Addressbook.model.Place',
   hasMany: [
     name: 'people'
     model: 'Addressbook.model.Person'
-    foreignKey: 'parent_id',
+    foreignKey: 'parent_id'
     associationKey: 'people'
   ]
 

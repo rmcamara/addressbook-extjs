@@ -43,9 +43,11 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
     if showPeople
       @getPeopleTab().show()
       @getPlacesTab().hide()
+      @getView().setActiveTab(@getPeopleTab())
     else
       @getPlacesTab().show()
       @getPeopleTab().hide()
+      @getView().setActiveTab(@getPlacesTab())
 
   openPlaceEditor: (model) ->
     if !model

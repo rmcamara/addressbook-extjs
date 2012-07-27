@@ -19,10 +19,12 @@
 Ext.define 'Addressbook.view.MainTabs',
   extend: 'Ext.tab.Panel'
   alias: 'widget.addressbook-MainTabs'
-  requires: [ 'Ext.tab.Panel',
-              'Addressbook.controller.MainTabsViewController',
-              'Addressbook.view.PlaceListingPanel',
-              'Addressbook.view.PlaceEditor']
+  requires: [
+    'Ext.tab.Panel'
+    'Addressbook.controller.MainTabsViewController'
+    'Addressbook.view.PlaceListingPanel'
+    'Addressbook.view.PeopleListingPanel'
+  ]
   mixins: [ 'Deft.mixin.Controllable', 'Deft.mixin.Injectable' ]
   controller:'Addressbook.controller.MainTabsViewController'
 
@@ -35,16 +37,16 @@ Ext.define 'Addressbook.view.MainTabs',
 
     Ext.applyIf( me,
       items: [
+        title:'Places'
         itemId:'placesTab'
         xtype: 'addressbook-PlaceListingPanel'
-        title:'Places'
         bodyPadding:10
       ,
         title:'People'
         itemId:'peopleTab'
+        xtype: 'addressbook-PeopleListingPanel'
         hidden: true
         bodyPadding:10
-        html:'TODO'
       ]
     )
 

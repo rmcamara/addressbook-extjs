@@ -29,7 +29,7 @@ include(dirname(__FILE__)."/dbscheme.php");
 
 //
 
-$ip = getenv('REMOTE_ADDR');
+$ip = $_SERVER['REMOTE_ADDR'];
 $msg = $_SERVER['REQUEST_URI'] . '\n' . print_r($_REQUEST, true);
 $query = "INSERT INTO requestLog (source, request) VALUES ('$ip', '$msg')";
 $DB->Execute($query);
@@ -120,8 +120,7 @@ function ListPeople() {
 			$personArr[$key] = GetValueString($key, $value, $results);
 		}
 
-		$pquery = "Select ". Place::ID . ", " . Place::NAME .
-				" FROM ". Place::TABLE_NAME .
+		$pquery = "Select * FROM ". Place::TABLE_NAME .
 				" LEFT JOIN links ON ".Place::TABLE_NAME.".".Place::ID."=links.places ".
 				"WHERE links.people=" . $person[Person::ID];
 		$places = $DB->Execute($pquery);

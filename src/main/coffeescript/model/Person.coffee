@@ -35,7 +35,7 @@ Ext.define('Addressbook.model.Person',
     name: 'title'
     type: 'string'
   ,
-    name: 'birthday'
+    name: 'birth'
     type: 'date'
     dateFormat: 'YYYY-MM-DD'
   ,
@@ -43,17 +43,16 @@ Ext.define('Addressbook.model.Person',
     type: 'string'
   ,
     name: 'cell'
-    type: 'int'
+    type: 'string'
   ]
 
   hasMany: [
     name: 'places'
     model: 'Addressbook.model.Place'
-    foreignKey: 'parent_id',
+    foreignKey: 'parent_id'
     associationKey: 'places'
   ]
 
   proxy:
     type: 'personProxy'
-  # Omitted person linkage
 )
