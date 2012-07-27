@@ -30,7 +30,7 @@ include(dirname(__FILE__)."/dbscheme.php");
 //
 
 $ip = getenv('REMOTE_ADDR');
-$msg = print_r($_REQUEST, true);
+$msg = $_SERVER['REQUEST_URI'] . '\n' . print_r($_REQUEST, true);
 $query = "INSERT INTO requestLog (source, request) VALUES ('$ip', '$msg')";
 $DB->Execute($query);
 

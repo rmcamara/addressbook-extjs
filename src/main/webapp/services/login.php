@@ -21,23 +21,51 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 require_once("dbconnect.php");
+require(dirname(__FILE__).'/response.php');
+
+define('SALT', 'melanie');
+
+$response = new Response();
 header("Content-type: application/json", true);
 $json = array();
 if (!$_REQUEST['username'] || !$_REQUEST['password'])
 {
-    $json['success'] = false;
-	echo json_encode($json);
+    $response->success = false;
+    $response->message = 'Username/Password missing';
+	echo $response->to_json();
 	die();
 }
 
-$query = "SELECT uid FROM users WHERE username='". $_REQUEST['username']. "' AND password='".$_REQUEST['password']."'";
+if (isset($_REQUEST['register']) && $_REQUEST['register'] == true){
+	$query = "SELECT uid FROM users WHERE username='". $_REQUEST['username']. "'";
+	$uid = $DB->GetOne($query);
+	
+	if($uid != null){
+		$response->success = false;
+		$response->message = 'There already exist a user with this username';
+		echo $response->to_json();
+		die();
+	}
+	
+	$record['username'] = $_REQUEST['username'];
+	$record['password'] = ''.crypt($_REQUEST['password'], SALT);
+	$record['active'] = 0;
+	$DB->AutoExecute('users',$record, 'INSERT');
+	
+	
+	$response->success = false;
+	$response->message = 'Information entered. Please contact Ross to activate account.';
+	echo $response->to_json();
+	die();
+}
+
+$query = "SELECT uid FROM users WHERE username='". $_REQUEST['username']. "' AND password='".crypt($_REQUEST['password'], SALT)."' AND active=1";
 $uid = $DB->GetOne($query);
 
 if ($uid == null){
-    $json['success'] = false;
-    $json['errors'] = array();
-    $json['errors']['password'] = 'Invalid User/Password combination';
-    echo json_encode($json);
+    $response->success = false;
+    $response->message = 'Invalid User/Password combination ';
+    echo $response->to_json();
 	die();
 }
 
@@ -45,7 +73,8 @@ $ip = getenv('REMOTE_ADDR');
 $query = "UPDATE users SET last_ip='$ip' WHERE uid='$uid'";
 $results = $DB->Execute($query);
 
-$json['success'] = true;
-echo json_encode($json);
+$response->success = true;
+$response->message = 'Login Success';
+echo $response->to_json();
 
 ?>

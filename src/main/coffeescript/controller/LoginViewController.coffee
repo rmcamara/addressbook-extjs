@@ -59,6 +59,6 @@ Ext.define( 'Addressbook.controller.LoginViewController',
 
         failure: (form, action) =>
           @getView().setLoading( false )
-          Ext.Msg.alert('Authentication Failed')
+          Ext.Msg.alert('Authentication Failed',action.result.message)
       )
 )

@@ -63,6 +63,10 @@ Ext.define 'Addressbook.view.LoginWindow',
           width: 400
           grow: true
           growMin: 400
+        ,
+          xtype: 'checkbox'
+          fieldLabel: 'Register'
+          name: 'register'
         ]
         buttons: [
           itemId: 'resetButton'
