@@ -44,7 +44,7 @@ function GetValueString($key, $value, $results){
 	}
 
 	if ($key == 'birth' || $key == "last-update"){
-		return $results->UserTimeStamp($value, "Y/m/d H:i:s");
+		return $results->UserTimeStamp($value, "Y-m-d H:i:s");
 	}
 	else{
 		return stripslashes($value);
@@ -270,7 +270,6 @@ function GetPerson() {
 	$res = new Response();
 
 	$fields = array( Person::ID => $request->params->id);
-
 	$query = "SELECT * FROM ".Person::TABLE_NAME.generateWhere($fields);
 	$results = $DB->Execute($query);
 
@@ -283,16 +282,17 @@ function GetPerson() {
 		$pquery = "Select * ".
 				"FROM ".Place::TABLE_NAME.
 				" LEFT JOIN links ON ".Place::TABLE_NAME.'.'.Place::ID."=links.places ".
-				"WHERE links.people=" . $person['id'];
+				"WHERE links.people=" . $person[Person::ID];
 		$places = $DB->Execute($pquery);
 
-		$personArr['locations'] = array();
+		$personArr['places'] = array();
 		while ($place = $places->FetchRow()) {
 			$placeArr = array();
+			$placeArr['parent_id'] = $person[Person::ID];
 			foreach ($place as $key => $value){
 				$placeArr[$key] = GetValueString($key, $value, $results);
 			}
-			$personArr['locations'][] = $placeArr;
+			$personArr['places'][] = $placeArr;
 		}
 		
 		$res->data = $personArr;
@@ -310,7 +310,7 @@ function CommitPerson(){
 
 	$jRequest = get_object_vars($request->params);
 	if($request->params->id < 1){
-		$DB->AutoExecute(Person::TABLE_NAME,$record, 'INSERT');
+		$DB->AutoExecute(Person::TABLE_NAME,$jRequest, 'INSERT');
 		
 		// update the id.
 		$sql = "select " . Person::ID . " from " . Person::TABLE_NAME . generateWhere($jRequest) .
@@ -322,7 +322,7 @@ function CommitPerson(){
 	}
 		
 	$res->success = true;
-	$res->message = "Updated Record";
+	$res->message = "Updated Person";
 	$res->data = GetPerson()->data;
 	return $res;
 }
@@ -349,13 +349,14 @@ function GetLocation() {
 				"WHERE links.places=" . $place[Place::ID];
 		$people = $DB->Execute($pquery);
 
-        $placeArr['People'] = array();
+        $placeArr['people'] = array();
         while ($person = $people->FetchRow()) {
         	$jPerson = array();
+        	$jPerson['parent_id'] = $place[Place::ID];
         	foreach ($person as $key => $value){
         		$jPerson[$key] = GetValueString($key, $value, $results);
         	}
-        	$placeArr['People'][] = $jPerson;
+        	$placeArr['people'][] = $jPerson;
         }
 
         $res->data = $placeArr;
@@ -385,7 +386,7 @@ function CommitLocation(){
 	}
 
     $res->success = true;
-    $res->message = "Updated Record";
+    $res->message = "Updated Place";
     $res->data = GetLocation()->data;
 	return $res;
 }

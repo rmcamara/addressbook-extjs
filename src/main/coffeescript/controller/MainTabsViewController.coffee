@@ -18,10 +18,13 @@
 #
 Ext.define( 'Addressbook.controller.MainTabsViewController',
   extend: 'Addressbook.controller.BaseViewController'
-  requires: [ 'Addressbook.config.AddressbookEventMap',
-              'Addressbook.controller.BaseViewController',
-              'Addressbook.util.MessageBus',
-              'Addressbook.view.PlaceEditor']
+  requires: [
+    'Addressbook.config.AddressbookEventMap'
+    'Addressbook.controller.BaseViewController'
+    'Addressbook.util.MessageBus'
+    'Addressbook.view.PlaceEditor'
+    'Addressbook.view.PeopleEditor'
+  ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus']
 
@@ -37,16 +40,17 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
     result = {}
     result[ @getEventMap().SWITCH_DISPLAY_MODE ] = @changeDisplayMode
     result[ @getEventMap().OPEN_EDITOR_PLACE ] = @openPlaceEditor
+    result[ @getEventMap().OPEN_EDITOR_PERSON ] = @openPersonEditor
     return result
 
   changeDisplayMode: (showPeople) ->
     if showPeople
-      @getPeopleTab().show()
-      @getPlacesTab().hide()
+      @getPlacesTab().tab.hide()
+      @getPeopleTab().tab.show()
       @getView().setActiveTab(@getPeopleTab())
     else
-      @getPlacesTab().show()
-      @getPeopleTab().hide()
+      @getPeopleTab().tab.hide()
+      @getPlacesTab().tab.show()
       @getView().setActiveTab(@getPlacesTab())
 
   openPlaceEditor: (model) ->
@@ -62,6 +66,23 @@ Ext.define( 'Addressbook.controller.MainTabsViewController',
         xtype: 'addressbook-PlaceEditor'
         closable: true
         iconCls: 'place'
+        model: model
+        isNew: !model.getId()
+      ).show()
+
+  openPersonEditor: (model) ->
+    if !model
+      model = new Addressbook.model.Person()
+
+    tab = @getView().getComponent(model.getId())
+    if tab
+      @getView().setActiveTab(tab)
+    else
+      @getView().add(
+        itemId: model.getId()
+        xtype: 'addressbook-PeopleEditor'
+        closable: true
+        iconCls: 'people'
         model: model
         isNew: !model.getId()
       ).show()

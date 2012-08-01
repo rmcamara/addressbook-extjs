@@ -2,6 +2,11 @@
     background-image:url(../images/place.png ) !important;
 }
 
+.people{
+    background-image:url(../images/person.png ) !important;
+}
+
+
 .x-grid-cell-checkcolumn .x-grid-cell-inner {
     padding-top: 4px;
     padding-bottom: 2px;

@@ -22,6 +22,7 @@ Ext.define('Addressbook.model.Person',
   requires: [
     'Addressbook.model.BaseModel'
     'Addressbook.proxy.PersonProxy'
+    'Ext.Date'
   ]
 
   fields: [
@@ -37,7 +38,8 @@ Ext.define('Addressbook.model.Person',
   ,
     name: 'birth'
     type: 'date'
-    dateFormat: 'YYYY-MM-DD'
+    dateFormat: 'Y-m-d H:i:s'
+    defaultValue: undefined
   ,
     name: 'email'
     type: 'string'
@@ -55,4 +57,12 @@ Ext.define('Addressbook.model.Person',
 
   proxy:
     type: 'personProxy'
+
+  toHtmlString: () ->
+    currentDetails = @get('title') + ' '
+    currentDetails += @get('firstname') + ' '
+    currentDetails += @get('lastname') + ' '
+    currentDetails += @get('email') + '\n'
+    currentDetails += @get('cell') + '\n'
+    currentDetails += @get('birth') + '\n'
 )

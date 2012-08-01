@@ -78,7 +78,7 @@ Ext.define 'Addressbook.view.PeopleListingPanel',
           header: 'Birthday'
           flex: 1
           maxWidth: 150
-          dataIndex: 'birthday'
+          dataIndex: 'birth'
           renderer: Ext.util.Format.dateRenderer('M-d-Y')
         ,
           header: 'Details'

@@ -34,7 +34,8 @@ Ext.define( 'Addressbook.controller.AbstractListingViewController',
       click: 'onRefresh'
     addPlaceBtn:
       click: 'onAddPlace'
-    addPersonBtn: true
+    addPersonBtn:
+      click: 'onAddPerson'
     changeModeBtn:
       click: 'switchDisplayMode'
 
