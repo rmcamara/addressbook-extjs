@@ -65,7 +65,34 @@ Ext.define('Addressbook.model.Person',
     if @get('email')
       currentDetails += '\n' + @get('email')
     if @get('cell')
-      currentDetails += '\n' + @get('cell')
+      currentDetails += '\n' + @getFormattedPhone(@get('cell'))
     if @get('birth')
-      currentDetails += '\n' + @get('birth')
+      currentDetails += '\n' + Ext.util.Format.date(@get('birth'), 'n/d/Y')
+    return currentDetails
+
+  toLinkedHtmlString: () ->
+    currentDetails = @get('title') + ' '
+    currentDetails += @get('firstname') + ' '
+    currentDetails += @get('lastname') + ' '
+    if @get('email')
+      currentDetails += '\n<a href="mailto:' +@get('email') + '" >' + @get('email') + '</a>'
+    if @get('cell')
+      currentDetails += '\n<a href="tel:' +@get('cell') + '" >' + @getFormattedPhone(@get('cell')) + '</a>'
+    if @get('birth')
+      currentDetails += '\n' + Ext.util.Format.date(@get('birth'), 'F d, Y')
+    return currentDetails
+
+  getFormattedPhone: (value) ->
+    # Hacked to work arround existing data with garbage values (remove "()- ")
+    string = value.replace(/[ \-\(\)]/gi, '')
+
+    arr = string.split('')
+    if arr.length == 7
+      prefix = arr.splice(0, 3)
+      return first_part.join() + '-' + arr.join('')
+    if arr.length == 10
+      areacode = arr.splice(0,3)
+      prefix = arr.splice(0, 3)
+      return '(' + areacode.join('') + ') '+ prefix.join('') + '-' + arr.join('')
+    return string
 )

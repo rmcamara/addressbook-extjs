@@ -122,7 +122,7 @@ Ext.define( 'Addressbook.controller.PeopleEditorViewController',
   reload: () ->
     model = @getModel();
     @getForm().loadRecord(model)
-    @getCurrentDetailsPanel().update('<pre>'+model.toHtmlString()+ '</pre>')
+    @getCurrentDetailsPanel().update('<pre>'+model.toLinkedHtmlString()+ '</pre>')
     @getView().setTitle(model.get('firstname') + ' ' + model.get('lastname'))
     @getAssociatedItemsGrid().reconfigure(model.places())
 

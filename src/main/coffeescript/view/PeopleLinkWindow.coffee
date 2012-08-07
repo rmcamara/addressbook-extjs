@@ -75,15 +75,6 @@ Ext.define 'Addressbook.view.PeopleLinkWindow',
         xtype: 'toolbar'
         dock: 'bottom'
         items:[
-          'Filter:'
-        ,
-          itemId: 'filterTxt'
-          text: 'filter'
-          xtype: 'textfield'
-          flex: 2
-          maxWidth: 300
-          emptyText: "Enter filter keywords..."
-        ,
           xtype:'tbspacer'
           flex: 1
         ,

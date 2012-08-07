@@ -38,6 +38,8 @@ Ext.define( 'Addressbook.controller.AbstractListingViewController',
       click: 'onAddPerson'
     changeModeBtn:
       click: 'switchDisplayMode'
+    editRecordBtn:
+      click: 'editRecord'
 
   config:
     listingStore: true
@@ -62,6 +64,10 @@ Ext.define( 'Addressbook.controller.AbstractListingViewController',
   switchDisplayMode: (button) ->
 
   openEditor: (view, record) ->
+
+  editRecord: () ->
+    if @getGrid().getSelectionModel().getSelection().length > 0
+      @openEditor(@getGrid(), @getGrid().getSelectionModel().getSelection()[0])
 
   onAddPlace: ->
     @openPlaceEditor(null)

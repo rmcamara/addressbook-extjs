@@ -117,6 +117,10 @@ Ext.define 'Addressbook.view.PeopleListingPanel',
             xtype:'tbspacer'
             width: 20
           ,
+            itemId: 'editRecordBtn'
+            text: 'Edit'
+            icon: './resources/images/edit.png'
+          ,
             itemId: 'addPersonBtn'
             text: 'Person'
             icon: './resources/images/addPerson.png'

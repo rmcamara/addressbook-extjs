@@ -114,6 +114,10 @@ Ext.define 'Addressbook.view.PlaceListingPanel',
             xtype:'tbspacer'
             width: 20
           ,
+            itemId: 'editRecordBtn'
+            text: 'Edit'
+            icon: './resources/images/edit.png'
+          ,
             itemId: 'addPlaceBtn'
             text: 'Place'
             icon: './resources/images/addPlace.png'
