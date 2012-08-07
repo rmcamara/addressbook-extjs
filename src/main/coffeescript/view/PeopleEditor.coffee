@@ -82,6 +82,7 @@ Ext.define 'Addressbook.view.PeopleEditor',
         ,
           fieldLabel: 'Email'
           name: 'email'
+          vtype: 'email'
         ,
           fieldLabel: 'Cell'
           xtype: 'telephone'

@@ -38,6 +38,10 @@ Ext.define( 'Addressbook.config.AppConfig',
           url: 'data/people/links/read.json'
         linkPersonRequestUpdate:
           url: 'data/people/links/update.json'
+        linkLocationRequestRead:
+          url: 'data/places/links/read.json'
+        linkLocationRequestUpdate:
+          url: 'data/places/links/update.json'
       defaults:
         urlPrefix: 'data/'
         urlSuffix: '.json'
@@ -68,6 +72,10 @@ Ext.define( 'Addressbook.config.AppConfig',
           url: 'services/people/links/read.php'
         linkPersonRequestUpdate:
           url: 'services/people/links/update.php'
+        linkLocationRequestRead:
+          url: 'services/places/links/read.php'
+        linkLocationRequestUpdate:
+          url: 'services/places/links/update.php'
       defaults:
         urlPrefix: 'services/'
         urlSuffix: '.php'

@@ -17,55 +17,37 @@
 #    along with addressbook.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-Ext.define('Addressbook.model.Person',
+Ext.define('Addressbook.model.LinkLocation',
   extend: 'Addressbook.model.BaseModel'
   requires: [
     'Addressbook.model.BaseModel'
-    'Addressbook.proxy.PersonProxy'
-    'Ext.Date'
+    'Addressbook.proxy.LinkLocationProxy'
+  ]
+  mixins: [ 'Deft.mixin.Injectable']
+  inject: [
+    'messageBus'
+    'appConfig'
   ]
 
   fields: [
-    name: 'firstname'
-    type: 'string'
-    defaultValue: null
+    name: 'selected'
+    type: 'boolean'
   ,
-    name: 'lastname'
-    type: 'string'
-  ,
-    name: 'title'
+    name: 'name'
     type: 'string'
   ,
-    name: 'birth'
-    type: 'date'
-    dateFormat: 'Y-m-d H:i:s'
-    defaultValue: undefined
-  ,
-    name: 'email'
+    name: 'city'
     type: 'string'
   ,
-    name: 'cell'
+    name: 'state'
     type: 'string'
-  ]
-
-  hasMany: [
-    name: 'places'
-    model: 'Addressbook.model.Place'
-    foreignKey: 'parent_id'
-    associationKey: 'places'
   ]
 
   proxy:
-    type: 'personProxy'
+    type: 'linkLocationProxy'
 
   toHtmlString: () ->
-    currentDetails = @get('title') + ' '
-    currentDetails += @get('firstname') + ' '
-    currentDetails += @get('lastname') + ' '
-    if @get('email')
-      currentDetails += '\n' + @get('email')
-    if @get('cell')
-      currentDetails += '\n' + @get('cell')
-    if @get('birth')
-      currentDetails += '\n' + @get('birth')
+    currentDetails = @get('name') + '\n'
+    currentDetails += @get('city') + '\n'
+    currentDetails += @get('state') + ' '
 )

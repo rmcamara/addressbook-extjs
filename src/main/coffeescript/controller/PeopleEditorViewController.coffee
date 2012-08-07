@@ -22,7 +22,7 @@ Ext.define( 'Addressbook.controller.PeopleEditorViewController',
     'Addressbook.config.AddressbookEventMap'
     'Addressbook.controller.BaseViewController'
     'Addressbook.util.MessageBus'
-#    'Addressbook.view.LocationLinkWindow'
+    'Addressbook.view.LocationLinkWindow'
   ]
   mixins: [ 'Deft.mixin.Injectable' ]
   inject: [ 'appConfig' ,'messageBus', 'personStore']
@@ -96,11 +96,11 @@ Ext.define( 'Addressbook.controller.PeopleEditorViewController',
     )
 
   onLink: () ->
-#    linkPopup = Ext.create('Addressbook.view.LocationLinkWindow',
-#                                            locationId: @getModel().getId()
-#    )
-#    linkPopup.on('beforedestroy', @refreshAssociated, @)
-#    linkPopup.show()
+    linkPopup = Ext.create('Addressbook.view.LocationLinkWindow',
+                                            locationId: @getModel().getId()
+    )
+    linkPopup.on('beforedestroy', @refreshAssociated, @)
+    linkPopup.show()
 
   confirmDelete: (buttonId) ->
     if (buttonId == 'yes')
