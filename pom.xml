@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.thecamaras</groupId>
+	<artifactId>addressbook-extjs</artifactId>
+	<packaging>war</packaging>
+	<version>dev-snapshot</version>
+
+	<name>Camara - Addressbook - ExtJS</name>
+	<description>ExtJS implementation of Addressbook</description>
+
+	<dependencies>
+		
+	</dependencies>
+
+	<build>
+		<outputDirectory>target</outputDirectory>
+		
+		<!-- Once we figure out how to integrate Jasmine/Selenium tests, we'll probably want to specify these?
+		<testSourceDirectory>src/main/test</testSourceDirectory>
+		<testOutputDirectory>target</testOutputDirectory>
+		-->
+		
+		<plugins>
+			<plugin>
+				<groupId>com.voltvoodoo</groupId>
+				<artifactId>brew</artifactId>
+				<version>0.2.10</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>optimize</goal>
+						</goals>
+					</execution>
+				</executions>
+				
+				<configuration>
+					<coffeeSourceDir>src/main/coffeescript</coffeeSourceDir>
+					<coffeeOutputDir>target/js/app_src</coffeeOutputDir>
+					
+					<optimizeSourceDir>target/js/app_src</optimizeSourceDir>
+					<optimizeBuildDir>target/js/app</optimizeBuildDir>
+					<optimizeOutputDir>target/js/app_temp</optimizeOutputDir>
+					<skipModuleInsertion>true</skipModuleInsertion>
+					<providePlugins>false</providePlugins>
+					<modules>
+						<module>
+							<name>addressbookApp</name>
+						</module>
+					</modules>
+				</configuration>
+				
+			</plugin>
+
+			<!--  Create a WAR that can be used as a deployable widget. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<warName>addressbook</warName>
+					<warSourceExcludes>app/**</warSourceExcludes>
+					<webResources>
+						<resource>
+       		            	<directory>target/js</directory>
+       		            	<includes>
+								<include>app/**</include>
+       		            	</includes>
+							<excludes>
+								<exclude>app/build.txt</exclude>
+								<exclude>app/domReady.js</exclude>
+								<exclude>app/i18n.js</exclude>
+								<exclude>app/order.js</exclude>
+								<exclude>app/text.js</exclude>
+							</excludes>	
+       		            </resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+	<profile>
+		<id>CompileJavascript</id>
+		<properties>
+			<SENCHA_CMD>E:\software development\SenchaSDKTools-2.0.0-beta3\sencha.bat</SENCHA_CMD>
+		</properties>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2</version>
+					<configuration>
+					</configuration>
+					<executions>
+						<execution>
+							<id>sencha-precompile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<workingDirectory>${basedir}/target/${artifactId}-${version}</workingDirectory>
+								<executable>cmd.exe</executable>
+								<arguments>
+									<argument>/x</argument>
+									<argument>/c</argument>
+									<argument>${SENCHA_CMD}</argument>
+									<argument>create</argument>
+									<argument>jsb</argument>
+									<argument>-a</argument>
+									<argument>index-.html</argument>
+									<argument>-p</argument>
+									<argument>app.jsb3</argument>
+								</arguments>
+							</configuration>
+						</execution>
+						<execution>
+							<id>sencha-compile</id>
+							<phase>compile</phase>
+							<goals>
+								<goal>exec</goal>
+							</goals>
+							<configuration>
+								<workingDirectory>${basedir}/target/${artifactId}-${version}</workingDirectory>
+								<executable>cmd.exe</executable>
+								<arguments>
+									<argument>/x</argument>
+									<argument>/c</argument>
+									<argument>${SENCHA_CMD}</argument>
+									<argument>build</argument>
+									<argument>-p</argument>
+									<argument>app.jsb3</argument>
+									<argument>-d</argument>
+									<argument>.</argument>
+								</arguments>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+</project>
