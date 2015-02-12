@@ -28,6 +28,8 @@ Ext.define( 'Addressbook.controller.LoginViewController',
     resetButton:
       click: 'resetForm'
     loginForm: true
+    passwordTxt:
+    	specialKey: 'textfield_onSpecialKey' 
 
   config:
     view: null
@@ -61,4 +63,8 @@ Ext.define( 'Addressbook.controller.LoginViewController',
           @getView().setLoading( false )
           Ext.Msg.alert('Authentication Failed',action.result.message)
       )
+
+  textfield_onSpecialKey: (field, event) ->
+  	if (event.getKey() == event.ENTER)
+  		@onFormSubmit()
 )

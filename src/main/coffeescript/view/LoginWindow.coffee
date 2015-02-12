@@ -52,6 +52,7 @@ Ext.define 'Addressbook.view.LoginWindow',
           grow: true
           growMin: 400
         ,
+          itemId: 'passwordTxt'
           xtype: 'textfield'
           name: 'password'
           inputType: 'password'
